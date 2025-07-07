@@ -59,7 +59,7 @@
         }
 
         /* Estilo para link/botão ativo */
-        .sidebar-link.active, .filter-btn.active {
+        .sidebar-link.active, .filter-btn.active, .category-btn.selected {
             background-color: var(--fundo-card);
             color: var(--cor-acento-dourado);
             font-weight: 600;
@@ -71,6 +71,11 @@
             background-color: var(--cor-selecionada, var(--fundo-elemento));
             color: white;
             font-weight: bold;
+        }
+        .category-btn.selected {
+             background-color: var(--cor-acento-dourado);
+             color: black;
+             border-color: var(--cor-acento-dourado);
         }
         /* Estilo para o toggle de Segurança */
         .toggle-checkbox:checked {
@@ -94,7 +99,7 @@
         </div>
         <div class="w-1/2 flex items-center justify-center bg-[var(--fundo-principal)]">
             <div class="w-full max-w-md text-center p-6">
-                <img src="/logo castelo forte.png" alt="Logo Castelo Forte" class="mx-auto w-56 mb-8">
+                <img src="logo castelo forte.png" alt="Logo Castelo Forte" class="mx-auto w-56 mb-8">
                 <form class="space-y-4" onsubmit="event.preventDefault();">
                     <input type="email" required class="appearance-none block w-full px-3 py-3 bg-[var(--fundo-elemento)] border border-[var(--cor-borda)] placeholder-[var(--cor-texto-secundario)] text-[var(--cor-texto-principal)] rounded-md focus:outline-none focus:ring-[var(--cor-acento-dourado)] focus:border-[var(--cor-acento-dourado)] sm:text-sm" placeholder="Email">
                     <input type="password" required class="appearance-none block w-full px-3 py-3 bg-[var(--fundo-elemento)] border border-[var(--cor-borda)] placeholder-[var(--cor-texto-secundario)] text-[var(--cor-texto-principal)] rounded-md focus:outline-none focus:ring-[var(--cor-acento-dourado)] focus:border-[var(--cor-acento-dourado)] sm:text-sm" placeholder="Senha">
@@ -148,7 +153,9 @@
                         <p class="font-bold text-sm text-[var(--cor-texto-principal)]">Usuário</p>
                         <p class="text-xs text-[var(--cor-texto-secundario)]">usuario@email.com</p>
                     </div>
-                    <i data-lucide="log-out" class="w-5 h-5 ml-auto text-[var(--cor-texto-secundario)] hover:text-[var(--cor-despesa)] cursor-pointer"></i>
+                    <a href="#" id="btn-logout" class="ml-auto">
+                        <i data-lucide="log-out" class="w-5 h-5 text-[var(--cor-texto-secundario)] hover:text-[var(--cor-despesa)] cursor-pointer"></i>
+                    </a>
                 </div>
             </div>
         </aside>
@@ -173,21 +180,8 @@
             </header>
             
             <!-- Conteúdo Dinâmico da Coluna Central -->
-            <div class="main-column-content flex-1 p-8 overflow-y-auto">
-                <!-- CONTEÚDO DO DASHBOARD -->
-                <div id="dashboard-content" class="main-content-area space-y-6"></div>
-                <!-- CONTEÚDO DE LANÇAMENTOS -->
-                <div id="lancamentos-content" class="main-content-area hidden"></div>
-                <!-- CONTEÚDO DE RELATÓRIOS -->
-                <div id="relatorios-content" class="main-content-area hidden"></div>
-                <!-- CONTEÚDO DE METAS -->
-                <div id="metas-content" class="main-content-area hidden"></div>
-                <!-- CONTEÚDO DE CONFIGURAÇÕES -->
-                <div id="configuracoes-content" class="main-content-area hidden"></div>
-                <!-- CONTEÚDO DO QUESTIONÁRIO -->
-                <div id="questionnaire-content" class="main-content-area hidden"></div>
-                <!-- CONTEÚDO DOS PLANOS -->
-                <div id="plans-content" class="main-content-area hidden"></div>
+            <div id="main-content-container" class="main-column-content flex-1 p-8 overflow-y-auto">
+                <!-- As páginas serão renderizadas aqui -->
             </div>
         </main>
 
@@ -212,31 +206,33 @@
 
     <!-- TEMPLATES PARA CONTEÚDO DINÂMICO -->
     <template id="template-dashboard">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bg-[var(--fundo-card)] p-6 rounded-xl text-center col-span-1">
-                <h3 class="text-md text-[var(--cor-texto-secundario)]">Saldo disponível</h3>
-                <p class="text-4xl font-bold text-[var(--cor-acento-dourado)] mt-2">R$ 12.450,75</p>
+        <div class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-[var(--fundo-card)] p-6 rounded-xl text-center col-span-1">
+                    <h3 class="text-md text-[var(--cor-texto-secundario)]">Saldo disponível</h3>
+                    <p class="text-4xl font-bold text-[var(--cor-acento-dourado)] mt-2">R$ 12.450,75</p>
+                </div>
+                <div class="bg-[var(--fundo-card)] p-6 rounded-xl col-span-2">
+                     <h3 class="text-lg font-semibold text-[var(--cor-texto-principal)] mb-4">Últimos Lançamentos</h3>
+                     <div class="space-y-4">
+                         <div class="flex items-center justify-between"><div class="flex items-center space-x-3"><i data-lucide="arrow-up-circle" class="w-6 h-6 text-[var(--cor-receita)]"></i><p class="text-[var(--cor-texto-principal)]">Salário</p></div><p class="font-medium text-[var(--cor-receita)]">+ R$ 5.000,00</p></div>
+                         <div class="flex items-center justify-between"><div class="flex items-center space-x-3"><i data-lucide="arrow-down-circle" class="w-6 h-6 text-[var(--cor-despesa)]"></i><p class="text-[var(--cor-texto-principal)]">Aluguel</p></div><p class="font-medium text-[var(--cor-despesa)]">- R$ 1.500,00</p></div>
+                     </div>
+                </div>
             </div>
-            <div class="bg-[var(--fundo-card)] p-6 rounded-xl col-span-2">
-                 <h3 class="text-lg font-semibold text-[var(--cor-texto-principal)] mb-4">Últimos Lançamentos</h3>
-                 <div class="space-y-4">
-                     <div class="flex items-center justify-between"><div class="flex items-center space-x-3"><i data-lucide="arrow-up-circle" class="w-6 h-6 text-[var(--cor-receita)]"></i><p class="text-[var(--cor-texto-principal)]">Salário</p></div><p class="font-medium text-[var(--cor-receita)]">+ R$ 5.000,00</p></div>
-                     <div class="flex items-center justify-between"><div class="flex items-center space-x-3"><i data-lucide="arrow-down-circle" class="w-6 h-6 text-[var(--cor-despesa)]"></i><p class="text-[var(--cor-texto-principal)]">Aluguel</p></div><p class="font-medium text-[var(--cor-despesa)]">- R$ 1.500,00</p></div>
-                 </div>
-            </div>
-        </div>
-         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-            <div id="btn-questionnaire" class="bg-[var(--fundo-card)] p-6 rounded-xl text-center cursor-pointer hover:bg-white/5 transition-colors">
-                <i data-lucide="file-text" class="w-10 h-10 text-[var(--cor-acento-dourado)] mx-auto"></i>
-                <h3 class="text-lg font-bold text-[var(--cor-texto-principal)] mt-4">Descubra seu Perfil Financeiro</h3>
-                <p class="text-sm text-[var(--cor-texto-secundario)] mt-2">Responda algumas perguntas para entendermos melhor seus objetivos.</p>
-                <button class="w-full mt-4 py-3 px-4 text-sm font-bold rounded-md text-[var(--fundo-principal)] bg-[var(--cor-acento-dourado)] hover:bg-[var(--cor-acento-dourado-hover)] transition-colors">Começar Questionário</button>
-            </div>
-            <div class="bg-[var(--fundo-card)] p-6 rounded-xl text-center cursor-pointer hover:bg-white/5 transition-colors">
-                <i data-lucide="landmark" class="w-10 h-10 text-[var(--cor-acento-dourado)] mx-auto"></i>
-                <h3 class="text-lg font-bold text-[var(--cor-texto-principal)] mt-4">Conexão Bancária</h3>
-                <p class="text-sm text-[var(--cor-texto-secundario)] mt-2">Conecte seus bancos e importe seus lançamentos automaticamente.</p>
-                <button class="w-full mt-4 py-3 px-4 text-sm font-bold rounded-md text-[var(--fundo-principal)] bg-[var(--cor-acento-dourado)] hover:bg-[var(--cor-acento-dourado-hover)] transition-colors">Conectar agora</button>
+             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                <div id="btn-questionnaire" class="bg-[var(--fundo-card)] p-6 rounded-xl text-center cursor-pointer hover:bg-white/5 transition-colors">
+                    <i data-lucide="file-text" class="w-10 h-10 text-[var(--cor-acento-dourado)] mx-auto"></i>
+                    <h3 class="text-lg font-bold text-[var(--cor-texto-principal)] mt-4">Descubra seu Perfil Financeiro</h3>
+                    <p class="text-sm text-[var(--cor-texto-secundario)] mt-2">Responda algumas perguntas para entendermos melhor seus objetivos.</p>
+                    <button class="w-full mt-4 py-3 px-4 text-sm font-bold rounded-md text-[var(--fundo-principal)] bg-[var(--cor-acento-dourado)] hover:bg-[var(--cor-acento-dourado-hover)] transition-colors">Começar Questionário</button>
+                </div>
+                <div class="bg-[var(--fundo-card)] p-6 rounded-xl text-center cursor-pointer hover:bg-white/5 transition-colors">
+                    <i data-lucide="landmark" class="w-10 h-10 text-[var(--cor-acento-dourado)] mx-auto"></i>
+                    <h3 class="text-lg font-bold text-[var(--cor-texto-principal)] mt-4">Conexão Bancária</h3>
+                    <p class="text-sm text-[var(--cor-texto-secundario)] mt-2">Conecte seus bancos e importe seus lançamentos automaticamente.</p>
+                    <button class="w-full mt-4 py-3 px-4 text-sm font-bold rounded-md text-[var(--fundo-principal)] bg-[var(--cor-acento-dourado)] hover:bg-[var(--cor-acento-dourado-hover)] transition-colors">Conectar agora</button>
+                </div>
             </div>
         </div>
     </template>
@@ -350,11 +346,39 @@
        </div>
     </template>
 
+    <template id="template-goal-details">
+        <div class="flex flex-col h-full">
+            <header class="flex items-center justify-between h-20 px-6 shrink-0 border-b border-[var(--cor-borda)]">
+                <h2 class="text-xl font-bold text-[var(--cor-texto-principal)]" id="goal-detail-title"></h2>
+                <i data-lucide="x" class="w-7 h-7 text-[var(--cor-texto-secundario)] cursor-pointer p-1 rounded-full hover:bg-[var(--fundo-card)] close-panel-btn"></i>
+            </header>
+            <main class="flex-1 p-6 overflow-y-auto right-panel-content space-y-6">
+                <div class="bg-[var(--fundo-elemento)] p-4 rounded-lg">
+                    <p class="text-sm text-[var(--cor-texto-secundario)]">Progresso</p>
+                    <div class="flex justify-between items-baseline">
+                        <p class="text-3xl font-bold" id="goal-detail-current"></p>
+                        <p class="text-md text-[var(--cor-texto-secundario)]">de <span id="goal-detail-total"></span></p>
+                    </div>
+                    <div class="w-full bg-gray-700 rounded-full h-2.5 mt-2"><div id="goal-detail-progress" class="h-2.5 rounded-full"></div></div>
+                </div>
+                <div>
+                    <h3 class="text-md font-semibold text-[var(--cor-texto-principal)] mb-2">Contribuições</h3>
+                    <div id="goal-contributions-list" class="space-y-2">
+                        <!-- Contribuições serão inseridas aqui -->
+                    </div>
+                </div>
+            </main>
+            <footer class="p-6 border-t border-[var(--cor-borda)]">
+                <button class="w-full py-3 text-sm font-bold rounded-md text-black bg-[var(--cor-acento-dourado)] hover:bg-[var(--cor-acento-dourado-hover)]">Adicionar Contribuição</button>
+            </footer>
+        </div>
+    </template>
+
     <template id="template-transaction-details">
         <div class="flex flex-col h-full">
             <header class="flex items-center justify-between h-20 px-6 shrink-0 border-b border-[var(--cor-borda)]">
                 <h2 class="text-xl font-bold text-[var(--cor-texto-principal)]">Detalhe do Lançamento</h2>
-                <i data-lucide="x" class="w-7 h-7 text-[var(--cor-texto-secundario)] cursor-pointer p-1 rounded-full hover:bg-[var(--fundo-card)]" onclick="closeRightPanel()"></i>
+                <i data-lucide="x" class="w-7 h-7 text-[var(--cor-texto-secundario)] cursor-pointer p-1 rounded-full hover:bg-[var(--fundo-card)] close-panel-btn"></i>
             </header>
             <main class="flex-1 p-6 overflow-y-auto right-panel-content space-y-6">
                 <div class="text-center py-4">
@@ -381,7 +405,7 @@
         <div class="flex flex-col h-full">
             <header class="flex items-center justify-between h-20 px-6 shrink-0 border-b border-[var(--cor-borda)]">
                 <h2 id="form-title" class="text-xl font-bold text-[var(--cor-texto-principal)]">Novo Lançamento</h2>
-                <i data-lucide="x" class="w-7 h-7 text-[var(--cor-texto-secundario)] cursor-pointer p-1 rounded-full hover:bg-[var(--fundo-card)]" onclick="closeRightPanel()"></i>
+                <i data-lucide="x" class="w-7 h-7 text-[var(--cor-texto-secundario)] cursor-pointer p-1 rounded-full hover:bg-[var(--fundo-card)] close-panel-btn"></i>
             </header>
             <main class="flex-1 p-6 overflow-y-auto right-panel-content">
                 <form id="transaction-form" class="space-y-6">
@@ -401,6 +425,12 @@
                             <button type="button" data-type="transfer" class="transaction-type-btn py-3 px-2 rounded-md border-2 border-[var(--cor-transferencia)] text-[var(--cor-transferencia)]" style="--cor-selecionada: var(--cor-transferencia);">Transferência</button>
                         </div>
                     </div>
+                    <div id="category-selector-wrapper" class="hidden">
+                        <span class="text-sm font-medium text-[var(--cor-texto-secundario)]">Categoria</span>
+                        <div id="category-buttons" class="mt-2 flex flex-wrap gap-2">
+                            <!-- Buttons will be injected here -->
+                        </div>
+                    </div>
                 </form>
             </main>
             <footer class="p-6 border-t border-[var(--cor-borda)]">
@@ -413,7 +443,7 @@
          <div class="flex flex-col h-full">
             <header class="flex items-center justify-between h-20 px-6 shrink-0 border-b border-[var(--cor-borda)]">
                 <h2 class="text-xl font-bold text-[var(--cor-texto-principal)]">Notificações</h2>
-                <i data-lucide="x" class="w-7 h-7 text-[var(--cor-texto-secundario)] cursor-pointer p-1 rounded-full hover:bg-[var(--fundo-card)]" onclick="closeRightPanel()"></i>
+                <i data-lucide="x" class="w-7 h-7 text-[var(--cor-texto-secundario)] cursor-pointer p-1 rounded-full hover:bg-[var(--fundo-card)] close-panel-btn"></i>
             </header>
             <main class="flex-1 p-6 overflow-y-auto right-panel-content space-y-4">
                 <div class="flex items-start space-x-3 bg-[var(--fundo-elemento)] p-3 rounded-lg">
@@ -511,397 +541,468 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
-
-            // --- SELETORES GLOBAIS ---
-            const loginScreen = document.getElementById('login-screen');
-            const appWrapper = document.getElementById('app-wrapper');
-            const btnLogin = document.getElementById('btn-login');
-            const sidebarLinks = document.querySelectorAll('.sidebar-link');
-            const mainTitle = document.getElementById('main-title');
-            const mainContentAreas = document.querySelectorAll('.main-content-area');
-            const rightPanel = document.getElementById('right-panel');
-
-            // --- ESTADO DA APLICAÇÃO ---
-            let barChartInstance, pieChartInstance;
-            let currentDate = new Date(2025, 6, 1); // Julho 2025
-            let currentTransactionId = null;
             
-            // --- DADOS MOCK ---
-            const mockTransactions = {
-                "1": { name: "Supermercado", value: -650.20, category: "Alimentação", date: "2025-07-03", account: "Conta Corrente", description: "Compra mensal de supermercado.", type: "expense", icon: "shopping-cart" },
-                "2": { name: "Salário Empresa X", value: 5000.00, category: "Salário", date: "2025-07-02", account: "Conta Salário", description: "Recebimento do salário mensal.", type: "income", icon: "briefcase" },
-                "3": { name: "Aluguel", value: -1500.00, category: "Moradia", date: "2025-07-02", account: "Conta Corrente", description: "Pagamento do aluguel do apartamento.", type: "expense", icon: "home" },
-            };
-            const mockGoals = {
-                "1": { name: "Viagem de Férias", current: 3750, total: 5000, color: 'var(--cor-viagem)', icon: 'plane' },
-                "2": { name: "Bares e Restaurantes", current: 9, total: 100, color: 'var(--cor-alimentacao)', icon: 'utensils' },
-            };
-            const questionnaireQuestions = [
-                "Sinto uma apreensão significativa quando preciso tomar decisões importantes sobre dinheiro.", "Confio mais na minha própria análise detalhada do que na opinião geral do mercado ou de especialistas.", "A segurança e a preservação do meu dinheiro são mais importantes do que a chance de obter grandes lucros.", "Considero as experiências e recomendações de pessoas próximas ao fazer escolhas financeiras.", "Busco um equilíbrio claro entre gastar hoje e guardar para o futuro em minhas finanças.", "Prefiro manter meu dinheiro em aplicações muito seguras, mesmo que rendam abaixo da inflação.", "Prefiro seguir recomendações de consultores financeiros do que fazer minha própria pesquisa aprofundada.", "Tomo decisões financeiras importantes rapidamente, confiando na minha intuição ou visão.", "Quando vejo algo que me agrada, costumo comprá-lo no momento, mesmo sem ter planejado.", "Sinto-me confortável com minha estratégia financeira atual e não vejo necessidade de mudanças drásticas.", "Sinto-me tranquilo(a) e confiante sobre minha situação financeira futura.", "Gasto tempo entendendo a fundo como funcionam os produtos financeiros ou os bens que compro.", "Estou sempre atento(a) a oportunidades de alto crescimento, mesmo que envolvam riscos maiores.", "Minhas decisões de compra são baseadas principalmente em necessidade e valor, independente da opinião de outros.", "É difícil para mim manter um orçamento ou um plano financeiro consistente.", "Mesmo quando tenho dinheiro guardado, a ideia de uma despesa inesperada me causa muita ansiedade.", "Minhas decisões de investimento são baseadas primariamente em dados, fatos e lógica.", "A possibilidade de um ganho financeiro expressivo me motiva mais do que o medo de perder.", "Sinto satisfação em compartilhar boas experiências de compra ou conquistas financeiras com pessoas próximas.", "Reviso minhas finanças periodicamente, mas sem obsessão, apenas para garantir que estou no caminho certo.", "Tenho dificuldade em gastar dinheiro comigo mesmo(a) em coisas que não sejam estritamente necessárias.", "Prefiro estudar detalhadamente os riscos antes de tomar decisões financeiras importantes.", "Se eu tiver uma forte convicção sobre um investimento, estou disposto(a) a concentrar uma parte significativa do meu dinheiro nele.", "Sinto uma satisfação especial ao comprar algo que está sendo muito comentado ou desejado por outros.", "Busco equilibrar segurança e crescimento em minhas decisões financeiras.", "Esta pergunta é para verificar sua atenção. Por favor, marque \"Concordo Parcialmente\".", "Respondo a questionários sempre com total honestidade, mesmo quando as perguntas são pessoais.", "Vejo meus recursos financeiros como dádivas de Deus que devo administrar com sabedoria.", "Busco orientação em princípios bíblicos antes de tomar decisões financeiras importantes.", "Acredito que sou responsável perante Deus pela forma como uso meu dinheiro.", "Considero que meu dinheiro é exclusivamente meu e posso usá-lo como quiser.", "Procuro equilibrar minhas necessidades pessoais com oportunidades de ajudar outros.", "Sinto gratidão pelo que tenho, independente de ter mais ou menos que outros.", "Encontro satisfação em coisas simples, sem precisar de bens materiais para ser feliz.", "Sinto que preciso de mais dinheiro para ser verdadeiramente feliz.", "Consigo distinguir entre desejos e necessidades reais em minhas finanças.", "Mantenho paz interior mesmo quando não posso comprar tudo que gostaria.", "Encontro alegria genuína em ajudar outros financeiramente quando possível.", "Considero doações e ajuda ao próximo como parte essencial do meu planejamento financeiro.", "Prefiro dar de forma discreta, sem buscar reconhecimento público.", "Acredito que devo cuidar primeiro de todas as minhas necessidades antes de ajudar outros.", "Vejo oportunidades de generosidade como bênçãos, não como sacrifícios."
-            ];
-            const questionnaireAnswers = ["Discordo Totalmente", "Discordo", "Neutro", "Concordo", "Concordo Totalmente"];
-            let currentQuestionIndex = 0;
+            const App = {
+                // --- ELEMENTOS DO DOM ---
+                els: {
+                    loginScreen: document.getElementById('login-screen'),
+                    appWrapper: document.getElementById('app-wrapper'),
+                    mainContentContainer: document.getElementById('main-content-container'),
+                    mainTitle: document.getElementById('main-title'),
+                    rightPanel: document.getElementById('right-panel'),
+                },
 
-            // --- FUNÇÕES DE RENDERIZAÇÃO E UI ---
+                // --- ESTADO DA APLICAÇÃO ---
+                state: {
+                    currentPage: null,
+                    currentDate: new Date(2025, 6, 1),
+                    currentTransactionId: null,
+                    activeFilter: 'all',
+                    barChart: null,
+                    pieChart: null,
+                },
 
-            const formatCurrency = (value) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
-
-            const getCssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-
-            const setActivePage = (targetId) => {
-                sidebarLinks.forEach(link => link.classList.toggle('active', link.dataset.target === targetId));
-                mainContentAreas.forEach(area => {
-                    area.classList.toggle('hidden', area.id !== `${targetId}-content`);
-                    if(area.id === `${targetId}-content`) {
-                        area.innerHTML = ''; // Limpa apenas a área ativa antes de renderizar
+                // --- DADOS MOCK ---
+                data: {
+                    transactions: {
+                        "1": { name: "Supermercado", value: -650.20, category: "Alimentação", date: "2025-07-03", account: "Conta Corrente", description: "Compra mensal de supermercado.", type: "expense", icon: "shopping-cart" },
+                        "2": { name: "Salário Empresa X", value: 5000.00, category: "Salário", date: "2025-07-02", account: "Conta Salário", description: "Recebimento do salário mensal.", type: "income", icon: "briefcase" },
+                        "3": { name: "Aluguel", value: -1500.00, category: "Moradia", date: "2025-07-02", account: "Conta Corrente", description: "Pagamento do aluguel do apartamento.", type: "expense", icon: "home" },
+                        "4": { name: "Rendimento Poupança", value: 25.50, category: "Investimentos", date: "2025-06-30", account: "Conta Poupança", description: "Rendimento mensal.", type: "income", icon: "trending-up" },
+                        "5": { name: "Cinema", value: -80.00, category: "Lazer", date: "2025-06-15", account: "Cartão de Crédito", description: "Ingressos para filme.", type: "expense", icon: "film" },
+                        "6": { name: "Venda de produto", value: 350.00, category: "Vendas", date: "2025-08-05", account: "Conta Corrente", description: "Venda online.", type: "income", icon: "tag" },
+                    },
+                    goals: {
+                        "1": { name: "Viagem de Férias", current: 3750, total: 5000, color: 'var(--cor-viagem)', icon: 'plane' },
+                        "2": { name: "Bares e Restaurantes", current: 9, total: 100, color: 'var(--cor-alimentacao)', icon: 'utensils' },
+                    },
+                    contributions: {
+                        "1": [
+                            { date: "2025-07-01", amount: 1000.00 },
+                            { date: "2025-06-01", amount: 1500.00 },
+                            { date: "2025-05-01", amount: 1250.00 },
+                        ]
+                    },
+                    categories: {
+                        income: ['Salário', 'Vendas', 'Investimentos', 'Comissão', 'Outras Receitas'],
+                        expense: ['Moradia', 'Alimentação', 'Transporte', 'Lazer', 'Saúde', 'Educação', 'Outras Despesas']
+                    },
+                    questionnaire: {
+                        questions: [
+                            "Sinto uma apreensão significativa quando preciso tomar decisões importantes sobre dinheiro.", "Confio mais na minha própria análise detalhada do que na opinião geral do mercado ou de especialistas.", "A segurança e a preservação do meu dinheiro são mais importantes do que a chance de obter grandes lucros.", "Considero as experiências e recomendações de pessoas próximas ao fazer escolhas financeiras.", "Busco um equilíbrio claro entre gastar hoje e guardar para o futuro em minhas finanças.", "Prefiro manter meu dinheiro em aplicações muito seguras, mesmo que rendam abaixo da inflação.", "Prefiro seguir recomendações de consultores financeiros do que fazer minha própria pesquisa aprofundada.", "Tomo decisões financeiras importantes rapidamente, confiando na minha intuição ou visão.", "Quando vejo algo que me agrada, costumo comprá-lo no momento, mesmo sem ter planejado.", "Sinto-me confortável com minha estratégia financeira atual e não vejo necessidade de mudanças drásticas.", "Sinto-me tranquilo(a) e confiante sobre minha situação financeira futura.", "Gasto tempo entendendo a fundo como funcionam os produtos financeiros ou os bens que compro.", "Estou sempre atento(a) a oportunidades de alto crescimento, mesmo que envolvam riscos maiores.", "Minhas decisões de compra são baseadas principalmente em necessidade e valor, independente da opinião de outros.", "É difícil para mim manter um orçamento ou um plano financeiro consistente.", "Mesmo quando tenho dinheiro guardado, a ideia de uma despesa inesperada me causa muita ansiedade.", "Minhas decisões de investimento são baseadas primariamente em dados, fatos e lógica.", "A possibilidade de um ganho financeiro expressivo me motiva mais do que o medo de perder.", "Sinto satisfação em compartilhar boas experiências de compra ou conquistas financeiras com pessoas próximas.", "Reviso minhas finanças periodicamente, mas sem obsessão, apenas para garantir que estou no caminho certo.", "Tenho dificuldade em gastar dinheiro comigo mesmo(a) em coisas que não sejam estritamente necessárias.", "Prefiro estudar detalhadamente os riscos antes de tomar decisões financeiras importantes.", "Se eu tiver uma forte convicção sobre um investimento, estou disposto(a) a concentrar uma parte significativa do meu dinheiro nele.", "Sinto uma satisfação especial ao comprar algo que está sendo muito comentado ou desejado por outros.", "Busco equilibrar segurança e crescimento em minhas decisões financeiras.", "Esta pergunta é para verificar sua atenção. Por favor, marque \"Concordo Parcialmente\".", "Respondo a questionários sempre com total honestidade, mesmo quando as perguntas são pessoais.", "Vejo meus recursos financeiros como dádivas de Deus que devo administrar com sabedoria.", "Busco orientação em princípios bíblicos antes de tomar decisões financeiras importantes.", "Acredito que sou responsável perante Deus pela forma como uso meu dinheiro.", "Considero que meu dinheiro é exclusivamente meu e posso usá-lo como quiser.", "Procuro equilibrar minhas necessidades pessoais com oportunidades de ajudar outros.", "Sinto gratidão pelo que tenho, independente de ter mais ou menos que outros.", "Encontro satisfação em coisas simples, sem precisar de bens materiais para ser feliz.", "Sinto que preciso de mais dinheiro para ser verdadeiramente feliz.", "Consigo distinguir entre desejos e necessidades reais em minhas finanças.", "Mantenho paz interior mesmo quando não posso comprar tudo que gostaria.", "Encontro alegria genuína em ajudar outros financeiramente quando possível.", "Considero doações e ajuda ao próximo como parte essencial do meu planejamento financeiro.", "Prefiro dar de forma discreta, sem buscar reconhecimento público.", "Acredito que devo cuidar primeiro de todas as minhas necessidades antes de ajudar outros.", "Vejo oportunidades de generosidade como bênçãos, não como sacrifícios."
+                        ],
+                        answers: ["Discordo Totalmente", "Discordo", "Neutro", "Concordo", "Concordo Totalmente"],
+                        currentIndex: 0
                     }
-                });
-                
-                const activeLink = document.querySelector(`.sidebar-link[data-target="${targetId}"]`);
-                let newTitle = 'Dashboard'; // Título padrão
-                 if (activeLink) {
-                    newTitle = activeLink.textContent.trim();
-                } else {
-                    // Títulos para páginas sem link na sidebar
-                    const pageTitles = {
-                        'plans': 'Nossos Planos',
-                        'questionnaire': 'Perfil Financeiro',
-                        'questionnaire-result': 'Resultado do Perfil'
-                    };
-                    newTitle = pageTitles[targetId] || 'Dashboard';
-                }
-                mainTitle.textContent = newTitle;
-                
-                switch(targetId) {
-                    case 'dashboard': renderDashboard(); break;
-                    case 'lancamentos': renderTransactionPage(); break;
-                    case 'relatorios': renderReports(); break;
-                    case 'metas': renderGoalPage(); break;
-                    case 'plans': renderPlans(); break;
-                    case 'questionnaire': renderQuestionnaire(); break;
-                    case 'configuracoes': renderConfiguracoes(); break;
-                }
-                
-                closeRightPanel();
-            };
+                },
 
-            const openRightPanel = () => {
-                rightPanel.classList.remove('hidden');
-                rightPanel.classList.add('flex');
-            };
+                // --- FUNÇÕES UTILITÁRIAS ---
+                utils: {
+                    formatCurrency: (value) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value),
+                    getCssVar: (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim()
+                },
 
-            const closeRightPanel = () => {
-                rightPanel.classList.add('hidden');
-                rightPanel.classList.remove('flex');
-                rightPanel.innerHTML = '';
-                currentTransactionId = null;
-            };
-            window.closeRightPanel = closeRightPanel;
+                // --- RENDERIZAÇÃO DE PÁGINAS ---
+                pages: {
+                    render: (pageId) => {
+                        App.state.currentPage = pageId;
+                        App.els.mainContentContainer.innerHTML = '';
+                        const pageTitles = {
+                            'dashboard': 'Dashboard', 'lancamentos': 'Lançamentos', 'relatorios': 'Relatórios',
+                            'metas': 'Metas', 'configuracoes': 'Configurações', 'plans': 'Nossos Planos',
+                            'questionnaire': 'Perfil Financeiro', 'questionnaire-result': 'Resultado do Perfil'
+                        };
+                        App.els.mainTitle.textContent = pageTitles[pageId] || 'Dashboard';
+                        
+                        document.querySelectorAll('.sidebar-link').forEach(link => {
+                            link.classList.toggle('active', link.dataset.target === pageId);
+                        });
 
-            // --- RENDERIZAÇÃO DE CONTEÚDO PRINCIPAL ---
-            
-            const renderDashboard = () => {
-                const contentArea = document.getElementById('dashboard-content');
-                const template = document.getElementById('template-dashboard');
-                contentArea.appendChild(template.content.cloneNode(true));
-                contentArea.querySelector('#btn-questionnaire').addEventListener('click', () => setActivePage('questionnaire'));
-                lucide.createIcons();
-            };
-            
-            const renderTransactionPage = () => {
-                const contentArea = document.getElementById('lancamentos-content');
-                const template = document.getElementById('template-lancamentos');
-                contentArea.appendChild(template.content.cloneNode(true));
-                renderTransactionList();
-            };
-            
-            const renderGoalPage = () => {
-                const contentArea = document.getElementById('metas-content');
-                const template = document.getElementById('template-metas');
-                contentArea.appendChild(template.content.cloneNode(true));
-                renderGoalList();
-            };
+                        const template = document.getElementById(`template-${pageId}`);
+                        if (template) {
+                            App.els.mainContentContainer.appendChild(template.content.cloneNode(true));
+                        }
+                        
+                        const pageInitFunction = App.pages[pageId];
+                        if (typeof pageInitFunction === 'function') {
+                            pageInitFunction();
+                        }
+                        lucide.createIcons();
+                        App.ui.closeRightPanel();
+                    },
 
-            const renderTransactionList = () => {
-                const listContainer = document.getElementById('transaction-list');
-                if (!listContainer) return;
-                listContainer.innerHTML = '';
-                Object.entries(mockTransactions).forEach(([id, data]) => {
-                    const template = document.getElementById('template-transaction-item');
-                    const clone = template.content.cloneNode(true);
-                    const item = clone.querySelector('.transaction-item');
+                    dashboard: () => {
+                        App.els.mainContentContainer.querySelector('#btn-questionnaire').addEventListener('click', () => App.pages.render('questionnaire'));
+                    },
                     
-                    item.dataset.id = id;
-                    item.querySelector('.name').textContent = data.name;
-                    item.querySelector('.category').textContent = data.category;
-                    const valueEl = item.querySelector('.value');
-                    valueEl.textContent = formatCurrency(data.value);
-                    valueEl.style.color = data.type === 'income' ? getCssVar('--cor-receita') : getCssVar('--cor-despesa');
+                    lancamentos: () => {
+                        App.pages.renderTransactionList();
+                        App.els.mainContentContainer.querySelector('#filter-buttons').addEventListener('click', (e) => {
+                            if (e.target.classList.contains('filter-btn')) {
+                                App.els.mainContentContainer.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                                e.target.classList.add('active');
+                                App.state.activeFilter = e.target.dataset.filter;
+                                App.pages.renderTransactionList();
+                            }
+                        });
+                        App.els.mainContentContainer.querySelector('.month-nav-btn[data-direction="-1"]').addEventListener('click', () => {
+                            App.state.currentDate.setMonth(App.state.currentDate.getMonth() - 1);
+                            App.pages.renderTransactionList();
+                        });
+                        App.els.mainContentContainer.querySelector('.month-nav-btn[data-direction="1"]').addEventListener('click', () => {
+                            App.state.currentDate.setMonth(App.state.currentDate.getMonth() + 1);
+                            App.pages.renderTransactionList();
+                        });
+                    },
                     
-                    const iconWrapper = item.querySelector('.icon-wrapper');
-                    const icon = document.createElement('i');
-                    icon.dataset.lucide = data.icon;
-                    icon.className = 'w-5 h-5';
-                    icon.style.color = valueEl.style.color;
-                    iconWrapper.appendChild(icon);
+                    renderTransactionList: () => {
+                        const listContainer = document.getElementById('transaction-list');
+                        const monthDisplay = document.getElementById('month-display');
+                        if (!listContainer || !monthDisplay) return;
 
-                    item.addEventListener('click', () => showTransactionDetails(id));
-                    listContainer.appendChild(clone);
-                });
-                lucide.createIcons();
-            };
+                        const monthName = App.state.currentDate.toLocaleString('pt-BR', { month: 'long' });
+                        monthDisplay.textContent = `${monthName.charAt(0).toUpperCase() + monthName.slice(1)} ${App.state.currentDate.getFullYear()}`;
+                        listContainer.innerHTML = '';
 
-            const renderGoalList = () => {
-                const listContainer = document.getElementById('goal-list');
-                if (!listContainer) return;
-                listContainer.innerHTML = '';
-                 Object.entries(mockGoals).forEach(([id, data]) => {
-                    const template = document.getElementById('template-goal-item');
-                    const clone = template.content.cloneNode(true);
-                    const item = clone.querySelector('.goal-card');
-                    
-                    item.dataset.id = id;
-                    item.querySelector('.name').textContent = data.name;
+                        const filtered = Object.entries(App.data.transactions).filter(([id, data]) => {
+                            const transactionDate = new Date(data.date);
+                            const isSameMonth = transactionDate.getMonth() === App.state.currentDate.getMonth() && transactionDate.getFullYear() === App.state.currentDate.getFullYear();
+                            if (!isSameMonth) return false;
+                            return App.state.activeFilter === 'all' || data.type === App.state.activeFilter;
+                        });
 
-                    const progress = (data.current / data.total) * 100;
-                    const progressBar = item.querySelector('.progress-bar');
-                    progressBar.style.width = `${progress}%`;
-                    progressBar.style.backgroundColor = data.color;
+                        if (filtered.length === 0) {
+                            listContainer.innerHTML = `<p class="text-center text-gray-400 py-10">Nenhum lançamento para este período.</p>`;
+                            return;
+                        }
 
-                    item.querySelector('.progress-text').textContent = `${formatCurrency(data.current)} de ${formatCurrency(data.total)}`;
-                    
-                    const iconWrapper = item.querySelector('.icon-wrapper');
-                    const icon = document.createElement('i');
-                    icon.dataset.lucide = data.icon;
-                    icon.className = 'w-5 h-5';
-                    icon.style.color = data.color;
-                    iconWrapper.appendChild(icon);
+                        filtered.forEach(([id, data]) => {
+                            const template = document.getElementById('template-transaction-item');
+                            const clone = template.content.cloneNode(true);
+                            const item = clone.querySelector('.transaction-item');
+                            item.dataset.id = id;
+                            item.querySelector('.name').textContent = data.name;
+                            item.querySelector('.category').textContent = data.category;
+                            const valueEl = item.querySelector('.value');
+                            valueEl.textContent = App.utils.formatCurrency(data.value);
+                            valueEl.style.color = data.type === 'income' ? App.utils.getCssVar('--cor-receita') : App.utils.getCssVar('--cor-despesa');
+                            const iconWrapper = item.querySelector('.icon-wrapper');
+                            const icon = document.createElement('i');
+                            icon.dataset.lucide = data.icon;
+                            icon.className = 'w-5 h-5';
+                            icon.style.color = valueEl.style.color;
+                            iconWrapper.appendChild(icon);
+                            item.addEventListener('click', () => App.ui.showTransactionDetails(id));
+                            listContainer.appendChild(clone);
+                        });
+                        lucide.createIcons();
+                    },
 
-                    listContainer.appendChild(clone);
-                });
-                lucide.createIcons();
-            };
-            
-            const renderReports = () => {
-                const contentArea = document.getElementById('relatorios-content');
-                const template = document.getElementById('template-relatorios');
-                contentArea.appendChild(template.content.cloneNode(true));
-                createOrUpdateCharts();
-            };
-            
-            const renderPlans = () => {
-                const contentArea = document.getElementById('plans-content');
-                const template = document.getElementById('template-plans');
-                contentArea.appendChild(template.content.cloneNode(true));
-                lucide.createIcons();
-            };
-            
-            const renderQuestionnaire = () => {
-                const contentArea = document.getElementById('questionnaire-content');
-                const template = document.getElementById('template-questionnaire');
-                contentArea.appendChild(template.content.cloneNode(true));
-                loadQuestion(0);
-            };
+                    metas: () => {
+                        const listContainer = document.getElementById('goal-list');
+                        if (!listContainer) return;
+                        listContainer.innerHTML = '';
+                         Object.entries(App.data.goals).forEach(([id, data]) => {
+                            const template = document.getElementById('template-goal-item');
+                            const clone = template.content.cloneNode(true);
+                            const item = clone.querySelector('.goal-card');
+                            item.dataset.id = id;
+                            item.querySelector('.name').textContent = data.name;
+                            const progress = (data.current / data.total) * 100;
+                            const progressBar = item.querySelector('.progress-bar');
+                            progressBar.style.width = `${progress}%`;
+                            progressBar.style.backgroundColor = data.color;
+                            item.querySelector('.progress-text').textContent = `${App.utils.formatCurrency(data.current)} de ${App.utils.formatCurrency(data.total)}`;
+                            const iconWrapper = item.querySelector('.icon-wrapper');
+                            const icon = document.createElement('i');
+                            icon.dataset.lucide = data.icon;
+                            icon.className = 'w-5 h-5';
+                            icon.style.color = data.color;
+                            iconWrapper.appendChild(icon);
+                            item.addEventListener('click', () => App.ui.showGoalDetails(id));
+                            listContainer.appendChild(clone);
+                        });
+                        lucide.createIcons();
+                    },
 
-            const renderConfiguracoes = () => {
-                const contentArea = document.getElementById('configuracoes-content');
-                const template = document.getElementById('template-configuracoes');
-                contentArea.appendChild(template.content.cloneNode(true));
-                lucide.createIcons();
-            };
+                    relatorios: () => { App.ui.createOrUpdateCharts(); },
+                    plans: () => {},
+                    configuracoes: () => {},
+                    questionnaire: () => { App.ui.loadQuestion(0); },
+                    'questionnaire-result': () => {
+                        App.els.mainContentContainer.querySelector('#result-btn-plans').addEventListener('click', () => App.pages.render('plans'));
+                        App.els.mainContentContainer.querySelector('#result-btn-dashboard').addEventListener('click', () => App.pages.render('dashboard'));
+                    }
+                },
 
-            const renderQuestionnaireResult = () => {
-                const contentArea = document.getElementById('questionnaire-content'); // Reutiliza a mesma área
-                mainTitle.textContent = 'Resultado do Perfil';
-                contentArea.innerHTML = '';
-                const template = document.getElementById('template-questionnaire-result');
-                contentArea.appendChild(template.content.cloneNode(true));
-                
-                contentArea.querySelector('#result-btn-plans').addEventListener('click', () => setActivePage('plans'));
-                contentArea.querySelector('#result-btn-dashboard').addEventListener('click', () => setActivePage('dashboard'));
-                lucide.createIcons();
-            };
+                // --- LÓGICA DE UI (PAINÉIS, MODAIS, ETC.) ---
+                ui: {
+                    openRightPanel: () => App.els.rightPanel.classList.remove('hidden'),
+                    closeRightPanel: () => App.els.rightPanel.classList.add('hidden'),
 
-            // --- RENDERIZAÇÃO DO PAINEL DIREITO ---
+                    showGoalDetails: (id) => {
+                        const data = App.data.goals[id];
+                        if (!data) return;
 
-            const showTransactionDetails = (id) => {
-                currentTransactionId = id;
-                const data = mockTransactions[id];
-                if (!data) return;
+                        const template = document.getElementById('template-goal-details');
+                        App.els.rightPanel.innerHTML = '';
+                        App.els.rightPanel.appendChild(template.content.cloneNode(true));
+                        
+                        App.els.rightPanel.querySelector('#goal-detail-title').textContent = data.name;
+                        App.els.rightPanel.querySelector('#goal-detail-current').textContent = App.utils.formatCurrency(data.current);
+                        App.els.rightPanel.querySelector('#goal-detail-total').textContent = App.utils.formatCurrency(data.total);
+                        
+                        const progressBar = App.els.rightPanel.querySelector('#goal-detail-progress');
+                        progressBar.style.width = `${(data.current / data.total) * 100}%`;
+                        progressBar.style.backgroundColor = data.color;
 
-                const template = document.getElementById('template-transaction-details');
-                const clone = template.content.cloneNode(true);
+                        const contributionsList = App.els.rightPanel.querySelector('#goal-contributions-list');
+                        const contributions = App.data.contributions[id];
+                        contributionsList.innerHTML = '';
+                        if (contributions && contributions.length > 0) {
+                            contributions.forEach(contrib => {
+                                const div = document.createElement('div');
+                                div.className = 'flex justify-between items-center text-sm py-2 border-b border-b-[var(--cor-borda)]';
+                                const date = new Date(contrib.date).toLocaleDateString('pt-BR', {day: '2-digit', month: 'long', timeZone: 'UTC'});
+                                div.innerHTML = `<span class="text-[var(--cor-texto-secundario)]">${date}</span><span class="font-medium text-[var(--cor-receita)]">+ ${App.utils.formatCurrency(contrib.amount)}</span>`;
+                                contributionsList.appendChild(div);
+                            });
+                        } else {
+                            contributionsList.innerHTML = `<p class="text-center text-sm text-[var(--cor-texto-secundario)] py-4">Nenhuma contribuição este mês.</p>`;
+                        }
+                        
+                        App.els.rightPanel.querySelector('.close-panel-btn').addEventListener('click', App.ui.closeRightPanel);
+                        lucide.createIcons();
+                        App.ui.openRightPanel();
+                    },
 
-                clone.getElementById('detail-name').textContent = data.name;
-                clone.getElementById('detail-value').textContent = formatCurrency(data.value);
-                clone.getElementById('detail-category').textContent = data.category;
-                clone.getElementById('detail-date').textContent = new Date(data.date).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
-                clone.getElementById('detail-account').textContent = data.account;
-                clone.getElementById('detail-description').textContent = data.description;
-                
-                const valueEl = clone.getElementById('detail-value');
-                valueEl.style.color = data.type === 'income' ? getCssVar('--cor-receita') : getCssVar('--cor-despesa');
+                    showTransactionDetails: (id) => {
+                        App.state.currentTransactionId = id;
+                        const data = App.data.transactions[id];
+                        if (!data) return;
 
-                clone.getElementById('btn-edit-transaction').addEventListener('click', () => showTransactionForm(id));
-                clone.getElementById('btn-delete-transaction').addEventListener('click', () => {
-                    showConfirmationModal('Deseja realmente excluir este lançamento?', () => {
-                        delete mockTransactions[id];
-                        renderTransactionList();
-                        closeRightPanel();
+                        const template = document.getElementById('template-transaction-details');
+                        App.els.rightPanel.innerHTML = '';
+                        App.els.rightPanel.appendChild(template.content.cloneNode(true));
+
+                        App.els.rightPanel.querySelector('#detail-name').textContent = data.name;
+                        App.els.rightPanel.querySelector('#detail-value').textContent = App.utils.formatCurrency(data.value);
+                        App.els.rightPanel.querySelector('#detail-category').textContent = data.category;
+                        App.els.rightPanel.querySelector('#detail-date').textContent = new Date(data.date).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+                        App.els.rightPanel.querySelector('#detail-account').textContent = data.account;
+                        App.els.rightPanel.querySelector('#detail-description').textContent = data.description;
+                        
+                        const valueEl = App.els.rightPanel.querySelector('#detail-value');
+                        valueEl.style.color = data.type === 'income' ? App.utils.getCssVar('--cor-receita') : App.utils.getCssVar('--cor-despesa');
+
+                        App.els.rightPanel.querySelector('#btn-edit-transaction').addEventListener('click', () => App.ui.showTransactionForm(id));
+                        App.els.rightPanel.querySelector('#btn-delete-transaction').addEventListener('click', () => {
+                            App.ui.showConfirmationModal('Deseja realmente excluir este lançamento?', () => {
+                                delete App.data.transactions[id];
+                                App.pages.renderTransactionList();
+                                App.ui.closeRightPanel();
+                            });
+                        });
+                        
+                        App.els.rightPanel.querySelector('.close-panel-btn').addEventListener('click', App.ui.closeRightPanel);
+                        lucide.createIcons();
+                        App.ui.openRightPanel();
+                    },
+
+                    showTransactionForm: (id = null) => {
+                        App.state.currentTransactionId = id;
+                        const isEditing = id !== null;
+                        const data = isEditing ? App.data.transactions[id] : {};
+
+                        const template = document.getElementById('template-transaction-form');
+                        App.els.rightPanel.innerHTML = '';
+                        App.els.rightPanel.appendChild(template.content.cloneNode(true));
+                        
+                        App.els.rightPanel.querySelector('#form-title').textContent = isEditing ? 'Editar Lançamento' : 'Novo Lançamento';
+                        App.els.rightPanel.querySelector('[name="name"]').value = data.name || '';
+                        App.els.rightPanel.querySelector('[name="value"]').value = isEditing ? App.utils.formatCurrency(data.value).replace(/\s/g, '') : '';
+
+                        const typeSelector = App.els.rightPanel.querySelector('#transaction-type-selector');
+                        const categoryWrapper = App.els.rightPanel.querySelector('#category-selector-wrapper');
+                        const categoryContainer = App.els.rightPanel.querySelector('#category-buttons');
+
+                        const updateCategorySelector = (type, selectedCategory = null) => {
+                            const categories = App.data.categories[type] || [];
+                            categoryContainer.innerHTML = '';
+                            if (categories.length > 0) {
+                                categoryWrapper.classList.remove('hidden');
+                                categories.forEach(cat => {
+                                    const button = document.createElement('button');
+                                    button.type = 'button';
+                                    button.textContent = cat;
+                                    button.dataset.category = cat;
+                                    button.className = 'category-btn py-2 px-4 rounded-full text-sm border-2 border-[var(--cor-borda)] text-[var(--cor-texto-secundario)] transition-colors';
+                                    if (cat === selectedCategory) button.classList.add('selected');
+                                    button.addEventListener('click', () => {
+                                        categoryContainer.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('selected'));
+                                        button.classList.add('selected');
+                                    });
+                                    categoryContainer.appendChild(button);
+                                });
+                            } else {
+                                categoryWrapper.classList.add('hidden');
+                            }
+                        };
+
+                        typeSelector.querySelectorAll('.transaction-type-btn').forEach(button => {
+                            button.addEventListener('click', (e) => {
+                                typeSelector.querySelectorAll('.transaction-type-btn').forEach(btn => btn.classList.remove('selected'));
+                                e.currentTarget.classList.add('selected');
+                                updateCategorySelector(e.currentTarget.dataset.type);
+                            });
+                        });
+                        
+                        if (isEditing) {
+                            const typeBtn = typeSelector.querySelector(`[data-type="${data.type}"]`);
+                            if (typeBtn) {
+                                typeBtn.click();
+                                updateCategorySelector(data.type, data.category);
+                            }
+                        }
+
+                        App.els.rightPanel.querySelector('#btn-save-transaction').addEventListener('click', () => {
+                            alert('Lançamento salvo! (simulação)');
+                            App.ui.closeRightPanel();
+                        });
+                        
+                        App.els.rightPanel.querySelector('.close-panel-btn').addEventListener('click', App.ui.closeRightPanel);
+                        lucide.createIcons();
+                        App.ui.openRightPanel();
+                    },
+
+                    loadQuestion: (index) => {
+                        const { questions, answers } = App.data.questionnaire;
+                        if (index >= questions.length) {
+                            App.pages.render('questionnaire-result');
+                            return;
+                        }
+                        const questionArea = App.els.mainContentContainer;
+                        questionArea.querySelector('#question-text').textContent = questions[index];
+                        questionArea.querySelector('#progress-bar').style.width = `${((index + 1) / questions.length) * 100}%`;
+                        questionArea.querySelector('#question-counter').textContent = `Pergunta ${index + 1} de ${questions.length}`;
+                        
+                        const answerOptions = questionArea.querySelector('#answer-options');
+                        answerOptions.innerHTML = '';
+                        answers.forEach(answer => {
+                            const button = document.createElement('button');
+                            button.textContent = answer;
+                            button.className = 'w-full py-3 text-lg font-medium rounded-md border-2 border-[var(--cor-borda)] hover:bg-[var(--fundo-card)]';
+                            button.onclick = () => {
+                                answerOptions.querySelectorAll('button').forEach(btn => btn.classList.remove('bg-[var(--cor-acento-dourado)]', 'text-black'));
+                                button.classList.add('bg-[var(--cor-acento-dourado)]', 'text-black');
+                                questionArea.querySelector('#next-question-btn').disabled = false;
+                            };
+                            answerOptions.appendChild(button);
+                        });
+
+                        questionArea.querySelector('#next-question-btn').onclick = () => App.ui.loadQuestion(index + 1);
+                        questionArea.querySelector('#next-question-btn').disabled = true;
+                    },
+
+                    showConfirmationModal: (message, onConfirm) => {
+                        const modal = document.getElementById('confirmation-modal');
+                        modal.querySelector('#modal-message').textContent = message;
+                        modal.classList.remove('hidden');
+
+                        const confirmBtn = modal.querySelector('#modal-confirm-btn');
+                        const cancelBtn = modal.querySelector('#modal-cancel-btn');
+
+                        const confirmHandler = () => {
+                            onConfirm();
+                            hideModal();
+                        };
+                        const cancelHandler = hideModal;
+
+                        const hideModal = () => {
+                            modal.classList.add('hidden');
+                            confirmBtn.removeEventListener('click', confirmHandler);
+                            cancelBtn.removeEventListener('click', cancelHandler);
+                        };
+
+                        confirmBtn.addEventListener('click', confirmHandler, { once: true });
+                        cancelBtn.addEventListener('click', cancelHandler, { once: true });
+                    },
+
+                    createOrUpdateCharts: () => {
+                        if (App.state.barChart) App.state.barChart.destroy();
+                        if (App.state.pieChart) App.state.pieChart.destroy();
+                        
+                        const textColor = App.utils.getCssVar('--cor-texto-secundario');
+                        const gridColor = App.utils.getCssVar('--cor-borda');
+
+                        const barCtx = document.getElementById('mainBarChart')?.getContext('2d');
+                        if(barCtx) {
+                            App.state.barChart = new Chart(barCtx, {
+                                type: 'bar',
+                                data: {
+                                    labels: ['Abr', 'Mai', 'Jun', 'Jul'],
+                                    datasets: [{
+                                        label: 'Receitas', data: [5200, 5300, 5500, 5000],
+                                        backgroundColor: App.utils.getCssVar('--cor-receita'), borderRadius: 4,
+                                    }, {
+                                        label: 'Despesas', data: [3400, 3800, 4100, 2650],
+                                        backgroundColor: App.utils.getCssVar('--cor-despesa'), borderRadius: 4,
+                                    }]
+                                },
+                                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: textColor } } }, scales: { y: { beginAtZero: true, ticks: { color: textColor }, grid: { color: gridColor } }, x: { ticks: { color: textColor }, grid: { display: false } } } }
+                            });
+                        }
+
+                        const pieCtx = document.getElementById('pieChart')?.getContext('2d');
+                        if(pieCtx) {
+                            App.state.pieChart = new Chart(pieCtx, {
+                                type: 'doughnut',
+                                data: {
+                                    labels: ['Moradia', 'Alimentação', 'Transporte'],
+                                    datasets: [{ data: [1500, 650.20, 500], backgroundColor: [App.utils.getCssVar('--cor-moradia'), App.utils.getCssVar('--cor-alimentacao'), App.utils.getCssVar('--cor-transporte')], borderColor: App.utils.getCssVar('--fundo-card'), borderWidth: 4, hoverOffset: 8 }]
+                                },
+                                options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'bottom', labels: { color: textColor } } } }
+                            });
+                        }
+                    }
+                },
+
+                // --- INICIALIZAÇÃO ---
+                init: () => {
+                    document.getElementById('btn-login').addEventListener('click', () => {
+                        App.els.loginScreen.classList.add('hidden');
+                        App.els.appWrapper.classList.remove('hidden');
+                        App.els.appWrapper.classList.add('flex');
+                        
+                        document.querySelectorAll('.sidebar-link').forEach(link => {
+                            link.addEventListener('click', (e) => {
+                                e.preventDefault();
+                                App.pages.render(link.dataset.target);
+                            });
+                        });
+        
+                        document.getElementById('btn-new-transaction').addEventListener('click', () => App.ui.showTransactionForm());
+                        document.getElementById('btn-notifications').addEventListener('click', () => {
+                            App.els.rightPanel.innerHTML = document.getElementById('template-notifications').innerHTML;
+                            App.els.rightPanel.querySelector('.close-panel-btn').addEventListener('click', App.ui.closeRightPanel);
+                            lucide.createIcons();
+                            App.ui.openRightPanel();
+                        });
+                        document.getElementById('btn-plans').addEventListener('click', () => App.pages.render('plans'));
+                        document.getElementById('btn-logout').addEventListener('click', (e) => {
+                            e.preventDefault();
+                            App.els.appWrapper.classList.add('hidden');
+                            App.els.appWrapper.classList.remove('flex');
+                            App.els.loginScreen.classList.remove('hidden');
+                            App.els.loginScreen.classList.add('flex');
+                        });
+        
+                        App.pages.render('dashboard');
                     });
-                });
-
-                rightPanel.innerHTML = '';
-                rightPanel.appendChild(clone);
-                lucide.createIcons();
-                openRightPanel();
-            };
-            
-            const showTransactionForm = (id = null) => {
-                currentTransactionId = id;
-                const isEditing = id !== null;
-                const data = isEditing ? mockTransactions[id] : {};
-
-                const template = document.getElementById('template-transaction-form');
-                const clone = template.content.cloneNode(true);
-                
-                clone.getElementById('form-title').textContent = isEditing ? 'Editar Lançamento' : 'Novo Lançamento';
-                clone.querySelector('[name="name"]').value = data.name || '';
-                clone.querySelector('[name="value"]').value = isEditing ? formatCurrency(data.value).replace(/\s/g, '') : '';
-
-                clone.getElementById('btn-save-transaction').addEventListener('click', () => {
-                    alert('Lançamento salvo! (simulação)');
-                    closeRightPanel();
-                });
-
-                rightPanel.innerHTML = '';
-                rightPanel.appendChild(clone);
-                lucide.createIcons();
-                openRightPanel();
-            };
-            
-            const showNotifications = () => {
-                const template = document.getElementById('template-notifications');
-                rightPanel.innerHTML = '';
-                rightPanel.appendChild(template.content.cloneNode(true));
-                lucide.createIcons();
-                openRightPanel();
-            };
-
-            const loadQuestion = (index) => {
-                 if (index >= questionnaireQuestions.length) {
-                    renderQuestionnaireResult();
-                    return;
                 }
-                currentQuestionIndex = index;
-                const questionArea = document.getElementById('questionnaire-content');
-                questionArea.querySelector('#question-text').textContent = questionnaireQuestions[index];
-                questionArea.querySelector('#progress-bar').style.width = `${((index + 1) / questionnaireQuestions.length) * 100}%`;
-                questionArea.querySelector('#question-counter').textContent = `Pergunta ${index + 1} de ${questionnaireQuestions.length}`;
-                
-                const answerOptions = questionArea.querySelector('#answer-options');
-                answerOptions.innerHTML = '';
-                questionnaireAnswers.forEach(answer => {
-                    const button = document.createElement('button');
-                    button.textContent = answer;
-                    button.className = 'w-full py-3 text-lg font-medium rounded-md border-2 border-[var(--cor-borda)] hover:bg-[var(--fundo-card)]';
-                    button.onclick = () => {
-                        answerOptions.querySelectorAll('button').forEach(btn => btn.classList.remove('bg-[var(--cor-acento-dourado)]', 'text-black'));
-                        button.classList.add('bg-[var(--cor-acento-dourado)]', 'text-black');
-                        questionArea.querySelector('#next-question-btn').disabled = false;
-                    };
-                    answerOptions.appendChild(button);
-                });
-
-                questionArea.querySelector('#next-question-btn').onclick = () => loadQuestion(index + 1);
-                questionArea.querySelector('#next-question-btn').disabled = true;
             };
 
-            const showConfirmationModal = (message, onConfirm) => {
-                const modal = document.getElementById('confirmation-modal');
-                modal.querySelector('#modal-message').textContent = message;
-                modal.classList.remove('hidden');
-
-                const confirmBtn = modal.querySelector('#modal-confirm-btn');
-                const cancelBtn = modal.querySelector('#modal-cancel-btn');
-
-                const confirmHandler = () => {
-                    onConfirm();
-                    hideModal();
-                };
-                const cancelHandler = hideModal;
-
-                const hideModal = () => {
-                    modal.classList.add('hidden');
-                    confirmBtn.removeEventListener('click', confirmHandler);
-                    cancelBtn.removeEventListener('click', cancelHandler);
-                };
-
-                confirmBtn.addEventListener('click', confirmHandler, { once: true });
-                cancelBtn.addEventListener('click', cancelHandler, { once: true });
-            };
-
-            function createOrUpdateCharts() {
-                if (barChartInstance) { barChartInstance.destroy(); }
-                if (pieChartInstance) { pieChartInstance.destroy(); }
-                
-                const textColor = getCssVar('--cor-texto-secundario');
-                const gridColor = getCssVar('--cor-borda');
-
-                const barCtx = document.getElementById('mainBarChart')?.getContext('2d');
-                if(barCtx) {
-                    barChartInstance = new Chart(barCtx, {
-                        type: 'bar',
-                        data: {
-                            labels: ['Abr', 'Mai', 'Jun', 'Jul'],
-                            datasets: [{
-                                label: 'Receitas', data: [5200, 5300, 5500, 5000],
-                                backgroundColor: getCssVar('--cor-receita'), borderRadius: 4,
-                            }, {
-                                label: 'Despesas', data: [3400, 3800, 4100, 2650],
-                                backgroundColor: getCssVar('--cor-despesa'), borderRadius: 4,
-                            }]
-                        },
-                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: textColor } } }, scales: { y: { beginAtZero: true, ticks: { color: textColor }, grid: { color: gridColor } }, x: { ticks: { color: textColor }, grid: { display: false } } } }
-                    });
-                }
-
-                const pieCtx = document.getElementById('pieChart')?.getContext('2d');
-                if(pieCtx) {
-                    pieChartInstance = new Chart(pieCtx, {
-                        type: 'doughnut',
-                        data: {
-                            labels: ['Moradia', 'Alimentação', 'Transporte'],
-                            datasets: [{ data: [1500, 650.20, 500], backgroundColor: [getCssVar('--cor-moradia'), getCssVar('--cor-alimentacao'), getCssVar('--cor-transporte')], borderColor: getCssVar('--fundo-card'), borderWidth: 4, hoverOffset: 8 }]
-                        },
-                        options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'bottom', labels: { color: textColor } } } }
-                    });
-                }
-            }
-
-            // --- INICIALIZAÇÃO E EVENT LISTENERS ---
-            
-            function initializeApp() {
-                loginScreen.classList.add('hidden');
-                appWrapper.classList.remove('hidden');
-                appWrapper.classList.add('flex');
-                
-                sidebarLinks.forEach(link => {
-                    link.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        setActivePage(link.dataset.target);
-                    });
-                });
-
-                document.getElementById('btn-new-transaction').addEventListener('click', () => showTransactionForm());
-                document.getElementById('btn-notifications').addEventListener('click', showNotifications);
-                document.getElementById('btn-plans').addEventListener('click', () => setActivePage('plans'));
-
-                setActivePage('dashboard');
-            }
-
-            btnLogin.addEventListener('click', initializeApp);
-
+            App.init();
         });
     </script>
 </body>
