@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Castelo Forte - Protótipo Desktop Completo</title>
+    
+    <!-- Dependências -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--fundo-principal);
+            color: var(--cor-texto-principal);
+            overflow-y: hidden; /* Evita scroll na página inteira */
+        }
+        :root {
+            /* Paleta de Cores com Azul Marinho e Dourado */
+            --fundo-principal: #001a3a;
+            --fundo-secundario: #002147;
+            --fundo-card: #0a2b52;
+            --fundo-elemento: #0a2b52;
+            
+            --cor-texto-principal: #FFFFFF;
+            --cor-texto-secundario: #a0aec0;
+            
+            --cor-borda: #1e3a5f;
+
+            /* Cores de Acento com Dourado como principal */
+            --cor-acento-dourado: #C4A35A;
+            --cor-acento-dourado-hover: #b89854;
+            
+            /* Cores de Feedback */
+            --cor-receita: #34C759;
+            --cor-despesa: #FF3B30;
+            --cor-transferencia: #a0aec0;
+            --cor-moradia: #FF6384;
+            --cor-alimentacao: #FF9F40;
+            --cor-transporte: #4BC0C0;
+            --cor-viagem: #36A2EB;
+        }
+
+        /* Scrollbar customizado para as colunas */
+        .main-column-content::-webkit-scrollbar, .right-panel-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        .main-column-content::-webkit-scrollbar-track, .right-panel-content::-webkit-scrollbar-track {
+            background: var(--fundo-secundario);
+        }
+        .main-column-content::-webkit-scrollbar-thumb, .right-panel-content::-webkit-scrollbar-thumb {
+            background-color: var(--cor-borda);
+            border-radius: 10px;
+        }
+
+        /* Estilo para link/botão ativo */
+        .sidebar-link.active, .filter-btn.active {
+            background-color: var(--fundo-card);
+            color: var(--cor-acento-dourado);
+            font-weight: 600;
+        }
+        .sidebar-link.active i {
+            color: var(--cor-acento-dourado);
+        }
+        .transaction-type-btn.selected {
+            background-color: var(--cor-selecionada, var(--fundo-elemento));
+            color: white;
+            font-weight: bold;
+        }
+        /* Estilo para o toggle de Segurança */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: var(--cor-acento-dourado);
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: var(--cor-acento-dourado);
+        }
+    </style>
+</head>
+<body class="bg-[var(--fundo-principal)] text-[var(--cor-texto-principal)]">
+
+    <!-- TELA DE LOGIN -->
+    <div id="login-screen" class="flex h-screen w-full">
+        <div class="w-1/2 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=2511&auto=format&fit=crop');">
+            <div class="bg-black/60 w-full h-full flex flex-col justify-end p-12">
+                <h1 class="text-4xl font-bold text-white">Construa seu <span class="text-[var(--cor-acento-dourado)]">futuro financeiro</span>, tijolo por tijolo.</h1>
+                <p class="text-lg text-gray-300 mt-4">A sua fortaleza financeira começa com o controlo e a clareza que o Castelo Forte oferece.</p>
+            </div>
+        </div>
+        <div class="w-1/2 flex items-center justify-center bg-[var(--fundo-principal)]">
+            <div class="w-full max-w-md text-center p-6">
+                <img src="https://placehold.co/250x100/001a3a/C4A35A?text=Castelo+Forte" alt="Logo Castelo Forte" class="mx-auto w-56 mb-8">
+                <form class="space-y-4" onsubmit="event.preventDefault();">
+                    <input type="email" required class="appearance-none block w-full px-3 py-3 bg-[var(--fundo-elemento)] border border-[var(--cor-borda)] placeholder-[var(--cor-texto-secundario)] text-[var(--cor-texto-principal)] rounded-md focus:outline-none focus:ring-[var(--cor-acento-dourado)] focus:border-[var(--cor-acento-dourado)] sm:text-sm" placeholder="Email">
+                    <input type="password" required class="appearance-none block w-full px-3 py-3 bg-[var(--fundo-elemento)] border border-[var(--cor-borda)] placeholder-[var(--cor-texto-secundario)] text-[var(--cor-texto-principal)] rounded-md focus:outline-none focus:ring-[var(--cor-acento-dourado)] focus:border-[var(--cor-acento-dourado)] sm:text-sm" placeholder="Senha">
+                    <button id="btn-login" type="button" class="w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-md text-[var(--fundo-principal)] bg-[var(--cor-acento-dourado)] hover:bg-[var(--cor-acento-dourado-hover)] transition-colors">Entrar</button>
+                </form>
+                <p class="mt-8 text-center text-sm text-[var(--cor-texto-secundario)]">Não tem uma conta? <a href="#" class="font-medium text-[var(--cor-acento-dourado)] hover:text-[var(--cor-acento-dourado-hover)] transition-colors">Crie uma conta</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- APLICAÇÃO PRINCIPAL (Inicialmente escondida) -->
+    <div id="app-wrapper" class="flex h-screen hidden">
+
+        <!-- COLUNA ESQUERDA: NAVEGAÇÃO (SIDEBAR) -->
+        <aside class="w-64 bg-[var(--fundo-secundario)] p-4 flex flex-col shrink-0">
+            <!-- Logo -->
+            <div class="flex items-center justify-center mb-8">
+                <img src="https://placehold.co/200x80/002147/C4A35A?text=Castelo+Forte" alt="Logo Castelo Forte" class="w-40">
+            </div>
+
+            <!-- Botão Novo Lançamento -->
+            <button id="btn-new-transaction" class="w-full flex items-center justify-center py-3 px-4 mb-6 border border-transparent text-sm font-bold rounded-md text-[var(--fundo-principal)] bg-[var(--cor-acento-dourado)] hover:bg-[var(--cor-acento-dourado-hover)] transition-colors">
+                <i data-lucide="plus" class="w-5 h-5 mr-2"></i>
+                Novo Lançamento
+            </button>
+
+            <!-- Menu de Navegação -->
+            <nav class="flex-1 space-y-2">
+                <a href="#" class="sidebar-link flex items-center p-3 rounded-lg text-[var(--cor-texto-secundario)] hover:bg-[var(--fundo-card)] transition-colors" data-target="dashboard">
+                    <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i> Dashboard
+                </a>
+                <a href="#" class="sidebar-link flex items-center p-3 rounded-lg text-[var(--cor-texto-secundario)] hover:bg-[var(--fundo-card)] transition-colors" data-target="lancamentos">
+                    <i data-lucide="arrow-right-left" class="w-5 h-5 mr-3"></i> Lançamentos
+                </a>
+                <a href="#" class="sidebar-link flex items-center p-3 rounded-lg text-[var(--cor-texto-secundario)] hover:bg-[var(--fundo-card)] transition-colors" data-target="relatorios">
+                    <i data-lucide="pie-chart" class="w-5 h-5 mr-3"></i> Relatórios
+                </a>
+                <a href="#" class="sidebar-link flex items-center p-3 rounded-lg text-[var(--cor-texto-secundario)] hover:bg-[var(--fundo-card)] transition-colors" data-target="metas">
+                    <i data-lucide="target" class="w-5 h-5 mr-3"></i> Metas
+                </a>
+            </nav>
+
+            <!-- Perfil do Usuário -->
+            <div class="mt-auto">
+                 <a href="#" class="sidebar-link flex items-center p-3 rounded-lg text-[var(--cor-texto-secundario)] hover:bg-[var(--fundo-card)] transition-colors" data-target="configuracoes">
+                    <i data-lucide="settings" class="w-5 h-5 mr-3"></i> Configurações
+                </a>
+                <div class="flex items-center p-3 mt-2 border-t border-[var(--cor-borda)]">
+                    <img class="w-10 h-10 rounded-full border-2 border-[var(--cor-acento-dourado)]" src="https://placehold.co/100x100/0a2b52/C4A35A?text=U" alt="Avatar do usuário">
+                    <div class="ml-3">
+                        <p class="font-bold text-sm text-[var(--cor-texto-principal)]">Usuário</p>
+                        <p class="text-xs text-[var(--cor-texto-secundario)]">usuario@email.com</p>
+                    </div>
+                    <i data-lucide="log-out" class="w-5 h-5 ml-auto text-[var(--cor-texto-secundario)] hover:text-[var(--cor-despesa)] cursor-pointer"></i>
+                </div>
+            </div>
+        </aside>
+
+        <!-- COLUNA CENTRAL: CONTEÚDO PRINCIPAL -->
+        <main class="flex-1 bg-[var(--fundo-principal)] flex flex-col">
+            <!-- Header da Coluna Central -->
+            <header class="flex items-center justify-between h-20 px-8 shrink-0 border-b border-[var(--cor-borda)]">
+                <h1 id="main-title" class="text-2xl font-bold text-[var(--cor-texto-principal)]">Dashboard</h1>
+                <div class="flex items-center space-x-6">
+                    <div id="btn-notifications" class="relative cursor-pointer">
+                        <i data-lucide="bell" class="w-6 h-6 text-[var(--cor-texto-secundario)] hover:text-[var(--cor-acento-dourado)] transition-colors"></i>
+                        <span class="absolute -top-1 -right-1 flex h-3 w-3">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--cor-despesa)] opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-3 w-3 bg-[var(--cor-despesa)]"></span>
+                        </span>
+                    </div>
+                    <div id="btn-plans" class="cursor-pointer">
+                        <i data-lucide="gem" class="w-6 h-6 text-[var(--cor-texto-secundario)] hover:text-[var(--cor-acento-dourado)] transition-colors"></i>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Conteúdo Dinâmico da Coluna Central -->
+            <div class="main-column-content flex-1 p-8 overflow-y-auto">
+                <!-- CONTEÚDO DO DASHBOARD -->
+                <div id="dashboard-content" class="main-content-area space-y-6"></div>
+                <!-- CONTEÚDO DE LANÇAMENTOS -->
+                <div id="lancamentos-content" class="main-content-area hidden"></div>
+                <!-- CONTEÚDO DE RELATÓRIOS -->
+                <div id="relatorios-content" class="main-content-area hidden"></div>
+                <!-- CONTEÚDO DE METAS -->
+                <div id="metas-content" class="main-content-area hidden"></div>
+                <!-- CONTEÚDO DE CONFIGURAÇÕES -->
+                <div id="configuracoes-content" class="main-content-area hidden"></div>
+                <!-- CONTEÚDO DO QUESTIONÁRIO -->
+                <div id="questionnaire-content" class="main-content-area hidden"></div>
+                <!-- CONTEÚDO DOS PLANOS -->
+                <div id="plans-content" class="main-content-area hidden"></div>
+            </div>
+        </main>
+
+        <!-- COLUNA DIREITA: PAINEL CONTEXTUAL -->
+        <section id="right-panel" class="w-96 bg-[var(--fundo-secundario)] border-l border-[var(--cor-borda)] flex-col hidden">
+            <!-- O conteúdo aqui será inserido dinamicamente via JS -->
+        </section>
+
+    </div>
+    
+    <!-- MODAL DE CONFIRMAÇÃO -->
+    <div id="confirmation-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-[var(--fundo-card)] p-6 rounded-xl shadow-lg w-full max-w-sm text-center">
+            <p id="modal-message" class="mb-6 text-lg">Tem certeza?</p>
+            <div class="flex space-x-4">
+                <button id="modal-cancel-btn" class="w-full py-2 text-sm font-bold rounded-md text-[var(--cor-texto-principal)] bg-[var(--fundo-elemento)] hover:opacity-80">Cancelar</button>
+                <button id="modal-confirm-btn" class="w-full py-2 text-sm font-bold rounded-md text-white bg-[var(--cor-despesa)] hover:opacity-80">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- TEMPLATES PARA CONTEÚDO DINÂMICO -->
+    <template id="template-dashboard">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-[var(--fundo-card)] p-6 rounded-xl text-center col-span-1">
+                <h3 class="text-md text-[var(--cor-texto-secundario)]">Saldo disponível</h3>
+                <p class="text-4xl font-bold text-[var(--cor-acento-dourado)] mt-2">R$ 12.450,75</p>
+            </div>
+            <div class="bg-[var(--fundo-card)] p-6 rounded-xl col-span-2">
+                 <h3 class="text-lg font-semibold text-[var(--cor-texto-principal)] mb-4">Últimos Lançamentos</h3>
+                 <div class="space-y-4">
+                     <div class="flex items-center justify-between"><div class="flex items-center space-x-3"><i data-lucide="arrow-up-circle" class="w-6 h-6 text-[var(--cor-receita)]"></i><p class="text-[var(--cor-texto-principal)]">Salário</p></div><p class="font-medium text-[var(--cor-receita)]">+ R$ 5.000,00</p></div>
+                     <div class="flex items-center justify-between"><div class="flex items-center space-x-3"><i data-lucide="arrow-down-circle" class="w-6 h-6 text-[var(--cor-despesa)]"></i><p class="text-[var(--cor-texto-principal)]">Aluguel</p></div><p class="font-medium text-[var(--cor-despesa)]">- R$ 1.500,00</p></div>
+                 </div>
+            </div>
+        </div>
+         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            <div id="btn-questionnaire" class="bg-[var(--fundo-card)] p-6 rounded-xl text-center cursor-pointer hover:bg-white/5 transition-colors">
+                <i data-lucide="file-text" class="w-10 h-10 text-[var(--cor-acento-dourado)] mx-auto"></i>
+                <h3 class="text-lg font-bold text-[var(--cor-texto-principal)] mt-4">Descubra seu Perfil Financeiro</h3>
+                <p class="text-sm text-[var(--cor-texto-secundario)] mt-2">Responda algumas perguntas para entendermos melhor seus objetivos.</p>
+                <button class="w-full mt-4 py-3 px-4 text-sm font-bold rounded-md text-[var(--fundo-principal)] bg-[var(--cor-acento-dourado)] hover:bg-[var(--cor-acento-dourado-hover)] transition-colors">Começar Questionário</button>
+            </div>
+            <div class="bg-[var(--fundo-card)] p-6 rounded-xl text-center cursor-pointer hover:bg-white/5 transition-colors">
+                <i data-lucide="landmark" class="w-10 h-10 text-[var(--cor-acento-dourado)] mx-auto"></i>
+                <h3 class="text-lg font-bold text-[var(--cor-texto-principal)] mt-4">Conexão Bancária</h3>
+                <p class="text-sm text-[var(--cor-texto-secundario)] mt-2">Conecte seus bancos e importe seus lançamentos automaticamente.</p>
+                <button class="w-full mt-4 py-3 px-4 text-sm font-bold rounded-md text-[var(--fundo-principal)] bg-[var(--cor-acento-dourado)] hover:bg-[var(--cor-acento-dourado-hover)] transition-colors">Conectar agora</button>
+            </div>
+        </div>
+    </template>
+    
+    <template id="template-lancamentos">
+        <div class="bg-[var(--fundo-principal)] sticky top-0 py-4 z-10">
+            <div class="flex justify-between items-center text-center mb-4">
+                <i data-lucide="chevron-left" class="month-nav-btn w-7 h-7 text-[var(--cor-texto-secundario)] cursor-pointer p-1 rounded-full hover:bg-[var(--fundo-card)]" data-direction="-1"></i>
+                <span id="month-display" class="text-xl font-bold text-[var(--cor-texto-principal)]">Julho 2025</span>
+                <i data-lucide="chevron-right" class="month-nav-btn w-7 h-7 text-[var(--cor-texto-secundario)] cursor-pointer p-1 rounded-full hover:bg-[var(--fundo-card)]" data-direction="1"></i>
+            </div>
+            <div id="filter-buttons" class="grid grid-cols-3 gap-2 text-sm">
+                <button class="filter-btn py-2 px-3 rounded-md" data-filter="all">Todos</button>
+                <button class="filter-btn py-2 px-3 rounded-md text-[var(--cor-texto-secundario)] hover:bg-[var(--fundo-card)]" data-filter="income">Receitas</button>
+                <button class="filter-btn py-2 px-3 rounded-md text-[var(--cor-texto-secundario)] hover:bg-[var(--fundo-card)]" data-filter="expense">Despesas</button>
+            </div>
+        </div>
+        <div id="transaction-list" class="space-y-2"></div>
+    </template>
+    
+    <template id="template-relatorios">
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+            <div class="lg:col-span-3 bg-[var(--fundo-card)] p-6 rounded-xl">
+                <h3 class="text-lg font-semibold text-[var(--cor-texto-principal)] mb-4">Entradas vs Saídas (Últimos 4 meses)</h3>
+                <div class="h-80"><canvas id="mainBarChart"></canvas></div>
+            </div>
+            <div class="lg:col-span-2 bg-[var(--fundo-card)] p-6 rounded-xl">
+                <h3 class="text-lg font-semibold text-[var(--cor-texto-principal)] mb-4">Despesas por Categoria (Julho)</h3>
+                <div class="h-80"><canvas id="pieChart"></canvas></div>
+            </div>
+        </div>
+    </template>
+    
+    <template id="template-metas">
+         <div id="goal-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </template>
+
+    <template id="template-configuracoes">
+        <div class="max-w-3xl mx-auto space-y-10">
+            <!-- Seção de Aparência -->
+            <div>
+                <h3 class="text-sm font-semibold text-[var(--cor-texto-secundario)] mb-2 px-2">APARÊNCIA</h3>
+                <div class="bg-[var(--fundo-card)] p-4 rounded-lg flex justify-between items-center">
+                   <span class="font-medium">Tema</span>
+                   <div class="flex items-center gap-2 bg-[var(--fundo-principal)] p-1 rounded-full">
+                       <button class="px-4 py-1 rounded-full text-sm bg-[var(--cor-acento-dourado)] text-black font-semibold">Escuro</button>
+                       <button class="px-4 py-1 rounded-full text-sm text-[var(--cor-texto-secundario)]">Claro</button>
+                   </div>
+               </div>
+            </div>
+            <!-- Seção de Perfil -->
+            <div>
+                <h3 class="text-sm font-semibold text-[var(--cor-texto-secundario)] mb-2 px-2">PERFIL</h3>
+                <div class="bg-[var(--fundo-card)] p-6 rounded-lg">
+                    <form class="space-y-4">
+                         <div>
+                             <label for="profile-name" class="text-sm font-medium text-[var(--cor-texto-secundario)]">Nome</label>
+                             <input type="text" id="profile-name" value="Usuário" class="mt-1 block w-full px-3 py-3 bg-[var(--fundo-elemento)] border border-[var(--cor-borda)] rounded-md focus:outline-none focus:ring-[var(--cor-acento-dourado)] focus:border-[var(--cor-acento-dourado)]">
+                         </div>
+                         <div>
+                             <label for="profile-email" class="text-sm font-medium text-[var(--cor-texto-secundario)]">Email</label>
+                             <input type="email" id="profile-email" value="usuario@email.com" class="mt-1 block w-full px-3 py-3 bg-[var(--fundo-elemento)] border border-[var(--cor-borda)] rounded-md focus:outline-none focus:ring-[var(--cor-acento-dourado)] focus:border-[var(--cor-acento-dourado)]">
+                         </div>
+                         <div class="text-right pt-2">
+                            <button type="button" class="py-2 px-5 text-sm font-bold rounded-md text-black bg-[var(--cor-acento-dourado)] hover:bg-[var(--cor-acento-dourado-hover)]">Salvar Alterações</button>
+                         </div>
+                    </form>
+                </div>
+            </div>
+            <!-- Seção de Segurança -->
+            <div>
+                <h3 class="text-sm font-semibold text-[var(--cor-texto-secundario)] mb-2 px-2">SEGURANÇA</h3>
+                <div class="bg-[var(--fundo-card)] rounded-lg divide-y divide-[var(--cor-borda)]">
+                    <a href="#" class="flex items-center justify-between p-4 w-full text-left hover:bg-white/10 transition-colors rounded-t-lg">
+                        <span>Alterar Senha</span>
+                        <i data-lucide="chevron-right" class="w-5 h-5 text-[var(--cor-texto-secundario)]"></i>
+                    </a>
+                    <div class="flex items-center justify-between p-4 w-full text-left">
+                        <span>Autenticação de 2 Fatores</span>
+                        <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                            <input type="checkbox" name="toggle" id="security-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
+                            <label for="security-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="template-transaction-item">
+        <div class="transaction-item bg-[var(--fundo-card)] p-4 rounded-lg flex justify-between items-center cursor-pointer hover:bg-white/5 border-2 border-transparent hover:border-[var(--cor-acento-dourado)] transition-all">
+            <div class="flex items-center">
+                <div class="icon-wrapper w-10 h-10 flex items-center justify-center rounded-full bg-[var(--fundo-secundario)] mr-4"></div>
+                <div>
+                    <p class="name font-semibold text-[var(--cor-texto-principal)]"></p>
+                    <p class="category text-sm text-[var(--cor-texto-secundario)]"></p>
+                </div>
+            </div>
+            <p class="value font-bold text-lg"></p>
+        </div>
+    </template>
+
+    <template id="template-goal-item">
+        <div class="goal-card bg-[var(--fundo-card)] p-4 rounded-lg cursor-pointer hover:bg-white/5 border-2 border-transparent hover:border-[var(--cor-acento-dourado)] transition-all">
+           <div class="flex items-center mb-3">
+               <div class="icon-wrapper w-10 h-10 flex items-center justify-center rounded-full bg-[var(--fundo-principal)] mr-3"></div>
+               <p class="name font-semibold text-[var(--cor-texto-principal)]"></p>
+           </div>
+           <div class="w-full bg-gray-700 rounded-full h-2.5 mb-1"><div class="progress-bar h-2.5 rounded-full"></div></div>
+           <p class="progress-text text-sm text-[var(--cor-texto-secundario)] text-right"></p>
+       </div>
+    </template>
+
+    <template id="template-transaction-details">
+        <div class="flex flex-col h-full">
+            <header class="flex items-center justify-between h-20 px-6 shrink-0 border-b border-[var(--cor-borda)]">
+                <h2 class="text-xl font-bold text-[var(--cor-texto-principal)]">Detalhe do Lançamento</h2>
+                <i data-lucide="x" class="w-7 h-7 text-[var(--cor-texto-secundario)] cursor-pointer p-1 rounded-full hover:bg-[var(--fundo-card)]" onclick="closeRightPanel()"></i>
+            </header>
+            <main class="flex-1 p-6 overflow-y-auto right-panel-content space-y-6">
+                <div class="text-center py-4">
+                    <p class="text-5xl font-bold" id="detail-value"></p>
+                    <p class="text-lg font-semibold text-[var(--cor-texto-principal)] mt-2" id="detail-name"></p>
+                </div>
+                <div class="bg-[var(--fundo-elemento)] p-4 rounded-lg space-y-4">
+                    <div class="flex justify-between text-sm"><span class="text-[var(--cor-texto-secundario)]">Categoria</span><span class="font-medium" id="detail-category"></span></div>
+                    <div class="flex justify-between text-sm"><span class="text-[var(--cor-texto-secundario)]">Data</span><span class="font-medium" id="detail-date"></span></div>
+                    <div class="flex justify-between text-sm"><span class="text-[var(--cor-texto-secundario)]">Conta</span><span class="font-medium" id="detail-account"></span></div>
+                    <div><span class="text-sm text-[var(--cor-texto-secundario)]">Descrição</span><p class="text-sm font-medium mt-1" id="detail-description"></p></div>
+                </div>
+            </main>
+            <footer class="p-6 border-t border-[var(--cor-borda)]">
+                <div class="flex space-x-4">
+                    <button id="btn-edit-transaction" class="w-full py-3 text-sm font-bold rounded-md text-[var(--cor-texto-principal)] bg-[var(--fundo-elemento)] hover:opacity-80">Editar</button>
+                    <button id="btn-delete-transaction" class="w-full py-3 text-sm font-bold rounded-md text-white bg-[var(--cor-despesa)] hover:opacity-80">Excluir</button>
+                </div>
+            </footer>
+        </div>
+    </template>
+    
+    <template id="template-transaction-form">
+        <div class="flex flex-col h-full">
+            <header class="flex items-center justify-between h-20 px-6 shrink-0 border-b border-[var(--cor-borda)]">
+                <h2 id="form-title" class="text-xl font-bold text-[var(--cor-texto-principal)]">Novo Lançamento</h2>
+                <i data-lucide="x" class="w-7 h-7 text-[var(--cor-texto-secundario)] cursor-pointer p-1 rounded-full hover:bg-[var(--fundo-card)]" onclick="closeRightPanel()"></i>
+            </header>
+            <main class="flex-1 p-6 overflow-y-auto right-panel-content">
+                <form id="transaction-form" class="space-y-6">
+                    <div class="text-center">
+                        <label for="transaction-value" class="text-sm font-medium text-[var(--cor-texto-secundario)]">Valor</label>
+                        <input type="text" name="value" required class="text-5xl font-bold text-center w-full bg-transparent border-none focus:ring-0 p-0" placeholder="R$ 0,00">
+                    </div>
+                    <div>
+                        <label for="transaction-name" class="text-sm font-medium text-[var(--cor-texto-secundario)]">Nome</label>
+                        <input type="text" name="name" required class="mt-1 block w-full px-3 py-3 bg-[var(--fundo-elemento)] border border-[var(--cor-borda)] rounded-md focus:outline-none focus:ring-[var(--cor-acento-dourado)] focus:border-[var(--cor-acento-dourado)]" placeholder="Ex: Salário, Aluguel">
+                    </div>
+                    <div>
+                        <span class="text-sm font-medium text-[var(--cor-texto-secundario)]">Tipo</span>
+                        <div id="transaction-type-selector" class="mt-2 grid grid-cols-3 gap-2 text-sm">
+                            <button type="button" data-type="expense" class="transaction-type-btn py-3 px-2 rounded-md border-2 border-[var(--cor-despesa)] text-[var(--cor-despesa)]" style="--cor-selecionada: var(--cor-despesa);">Despesa</button>
+                            <button type="button" data-type="income" class="transaction-type-btn py-3 px-2 rounded-md border-2 border-[var(--cor-receita)] text-[var(--cor-receita)]" style="--cor-selecionada: var(--cor-receita);">Receita</button>
+                            <button type="button" data-type="transfer" class="transaction-type-btn py-3 px-2 rounded-md border-2 border-[var(--cor-transferencia)] text-[var(--cor-transferencia)]" style="--cor-selecionada: var(--cor-transferencia);">Transferência</button>
+                        </div>
+                    </div>
+                </form>
+            </main>
+            <footer class="p-6 border-t border-[var(--cor-borda)]">
+                <button id="btn-save-transaction" class="w-full py-3 text-sm font-bold rounded-md text-black bg-[var(--cor-acento-dourado)] hover:bg-[var(--cor-acento-dourado-hover)]">Salvar Lançamento</button>
+            </footer>
+        </div>
+    </template>
+
+    <template id="template-notifications">
+         <div class="flex flex-col h-full">
+            <header class="flex items-center justify-between h-20 px-6 shrink-0 border-b border-[var(--cor-borda)]">
+                <h2 class="text-xl font-bold text-[var(--cor-texto-principal)]">Notificações</h2>
+                <i data-lucide="x" class="w-7 h-7 text-[var(--cor-texto-secundario)] cursor-pointer p-1 rounded-full hover:bg-[var(--fundo-card)]" onclick="closeRightPanel()"></i>
+            </header>
+            <main class="flex-1 p-6 overflow-y-auto right-panel-content space-y-4">
+                <div class="flex items-start space-x-3 bg-[var(--fundo-elemento)] p-3 rounded-lg">
+                    <div class="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-full bg-[var(--cor-despesa)]/20 text-[var(--cor-despesa)]"><i data-lucide="calendar-clock"></i></div>
+                    <div>
+                        <p class="font-semibold">Lembrete de Pagamento</p>
+                        <p class="text-sm text-[var(--cor-texto-secundario)]">Sua conta de Aluguel no valor de R$ 1.500,00 vence amanhã.</p>
+                        <p class="text-xs text-gray-500 mt-1">Hoje, 09:30</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-3 bg-[var(--fundo-elemento)] p-3 rounded-lg">
+                    <div class="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-full bg-[var(--cor-viagem)]/20 text-[var(--cor-viagem)]"><i data-lucide="target"></i></div>
+                    <div>
+                        <p class="font-semibold">Meta Quase Atingida!</p>
+                        <p class="text-sm text-[var(--cor-texto-secundario)]">Você já alcançou 75% da sua meta "Viagem de Férias". Continue assim!</p>
+                        <p class="text-xs text-gray-500 mt-1">Ontem, 18:45</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </template>
+    
+    <template id="template-questionnaire">
+        <div class="max-w-3xl mx-auto text-center">
+            <div class="w-full bg-[var(--fundo-card)] rounded-full h-2.5 mb-4">
+                <div id="progress-bar" class="bg-[var(--cor-acento-dourado)] h-2.5 rounded-full" style="width: 0%"></div>
+            </div>
+            <p id="question-counter" class="text-sm text-[var(--cor-texto-secundario)] mb-6"></p>
+            <h2 id="question-text" class="text-3xl font-semibold mb-10"></h2>
+            <div id="answer-options" class="space-y-3 max-w-md mx-auto mb-10">
+                <!-- Opções de resposta -->
+            </div>
+            <button id="next-question-btn" class="py-3 px-8 text-md font-bold rounded-md text-black bg-[var(--cor-acento-dourado)] hover:bg-[var(--cor-acento-dourado-hover)] transition-opacity duration-300 disabled:opacity-50" disabled>Próximo</button>
+        </div>
+    </template>
+
+    <template id="template-questionnaire-result">
+        <div class="max-w-3xl mx-auto text-center flex flex-col items-center justify-center h-full">
+            <i data-lucide="award" class="w-24 h-24 mx-auto text-[var(--cor-acento-dourado)]"></i>
+            <h2 class="text-4xl font-bold mt-6">Seu Perfil é: O Guardião Prudente</h2>
+            <p class="text-xl text-[var(--cor-texto-secundario)] mt-4">Você valoriza a segurança e a estabilidade acima de tudo.</p>
+            <div class="text-left text-lg text-[var(--cor-texto-secundario)] leading-relaxed space-y-4 mt-8 max-w-2xl">
+                <p>Seu perfil financeiro, "O Guardião Prudente", revela uma abordagem cautelosa e metódica em relação ao dinheiro. Você não se deixa levar por impulsos ou tendências passageiras, preferindo analisar cada detalhe antes de tomar uma decisão. A segurança de suas economias é sua prioridade máxima, e você se sente mais confortável com investimentos de baixo risco, mesmo que isso signifique um retorno mais modesto.</p>
+                <p>Essa prudência é uma grande força, pois te protege de perdas significativas e garante uma base financeira sólida. No entanto, é importante equilibrar essa cautela com oportunidades de crescimento para que seu patrimônio não perca valor para a inflação ao longo do tempo.</p>
+            </div>
+            <div class="mt-12 w-full max-w-md">
+                 <button id="result-btn-plans" class="w-full py-4 text-md font-bold rounded-md text-black bg-[var(--cor-acento-dourado)] hover:bg-[var(--cor-acento-dourado-hover)]">Ver Nossos Planos</button>
+                 <button id="result-btn-dashboard" class="w-full mt-4 py-3 text-md font-bold rounded-md text-[var(--cor-texto-secundario)] hover:text-white">Voltar ao Dashboard</button>
+            </div>
+        </div>
+    </template>
+
+    <template id="template-plans">
+        <div class="max-w-5xl mx-auto text-center">
+            <h2 class="text-3xl font-bold">Evolua sua jornada financeira</h2>
+            <p class="text-lg text-[var(--cor-texto-secundario)] mt-2 mb-10">Escolha o plano que melhor se adapta às suas necessidades.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Plano 1 -->
+                <div class="bg-[var(--fundo-card)] p-6 rounded-lg border-2 border-transparent hover:border-[var(--cor-acento-dourado)] transition-colors flex flex-col">
+                    <h4 class="font-bold text-xl">Plano Essencial</h4>
+                    <p class="text-4xl font-bold my-4">R$ 19,90<span class="text-lg font-normal text-[var(--cor-texto-secundario)]">/mês</span></p>
+                    <ul class="text-left text-md space-y-2 text-[var(--cor-texto-secundario)] mb-6 flex-1">
+                        <li class="flex items-center"><i data-lucide="check" class="w-5 h-5 mr-2 text-[var(--cor-receita)]"></i>Controle de gastos completo</li>
+                        <li class="flex items-center"><i data-lucide="check" class="w-5 h-5 mr-2 text-[var(--cor-receita)]"></i>Criação de metas</li>
+                    </ul>
+                    <button class="w-full mt-auto py-3 text-sm font-bold rounded-md bg-[var(--fundo-elemento)] hover:bg-opacity-80 border-2 border-[var(--cor-acento-dourado)] text-[var(--cor-acento-dourado)]">Selecionar</button>
+                </div>
+                <!-- Plano 2 -->
+                <div class="bg-[var(--fundo-card)] p-6 rounded-lg border-2 border-[var(--cor-acento-dourado)] relative flex flex-col transform scale-105">
+                    <span class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[var(--cor-acento-dourado)] text-black text-xs font-bold px-3 py-1 rounded-full">MAIS POPULAR</span>
+                    <h4 class="font-bold text-xl">Plano Premium</h4>
+                    <p class="text-4xl font-bold my-4">R$ 39,90<span class="text-lg font-normal text-[var(--cor-texto-secundario)]">/mês</span></p>
+                    <ul class="text-left text-md space-y-2 text-[var(--cor-texto-secundario)] mb-6 flex-1">
+                        <li class="flex items-center"><i data-lucide="check" class="w-5 h-5 mr-2 text-[var(--cor-receita)]"></i>Tudo do Plano Essencial</li>
+                        <li class="flex items-center"><i data-lucide="check" class="w-5 h-5 mr-2 text-[var(--cor-receita)]"></i>Relatórios detalhados</li>
+                        <li class="flex items-center"><i data-lucide="check" class="w-5 h-5 mr-2 text-[var(--cor-receita)]"></i>Consultoria com especialista</li>
+                    </ul>
+                    <button class="w-full mt-auto py-3 text-sm font-bold rounded-md text-black bg-[var(--cor-acento-dourado)] hover:bg-[var(--cor-acento-dourado-hover)]">Selecionar</button>
+                </div>
+                 <!-- Plano 3 -->
+                <div class="bg-[var(--fundo-card)] p-6 rounded-lg border-2 border-transparent hover:border-[var(--cor-acento-dourado)] transition-colors flex flex-col">
+                    <h4 class="font-bold text-xl">Plano Castelo Forte</h4>
+                    <p class="text-4xl font-bold my-4">R$ 59,90<span class="text-lg font-normal text-[var(--cor-texto-secundario)]">/mês</span></p>
+                    <ul class="text-left text-md space-y-2 text-[var(--cor-texto-secundario)] mb-6 flex-1">
+                        <li class="flex items-center"><i data-lucide="check" class="w-5 h-5 mr-2 text-[var(--cor-receita)]"></i>Tudo do Plano Premium</li>
+                        <li class="flex items-center"><i data-lucide="check" class="w-5 h-5 mr-2 text-[var(--cor-receita)]"></i>Acesso a carteiras recomendadas</li>
+                        <li class="flex items-center"><i data-lucide="check" class="w-5 h-5 mr-2 text-[var(--cor-receita)]"></i>Gerente de conta pessoal</li>
+                    </ul>
+                    <button class="w-full mt-auto py-3 text-sm font-bold rounded-md bg-[var(--fundo-elemento)] hover:bg-opacity-80 border-2 border-[var(--cor-acento-dourado)] text-[var(--cor-acento-dourado)]">Selecionar</button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+
+            // --- SELETORES GLOBAIS ---
+            const loginScreen = document.getElementById('login-screen');
+            const appWrapper = document.getElementById('app-wrapper');
+            const btnLogin = document.getElementById('btn-login');
+            const sidebarLinks = document.querySelectorAll('.sidebar-link');
+            const mainTitle = document.getElementById('main-title');
+            const mainContentAreas = document.querySelectorAll('.main-content-area');
+            const rightPanel = document.getElementById('right-panel');
+
+            // --- ESTADO DA APLICAÇÃO ---
+            let barChartInstance, pieChartInstance;
+            let currentDate = new Date(2025, 6, 1); // Julho 2025
+            let currentTransactionId = null;
+            
+            // --- DADOS MOCK ---
+            const mockTransactions = {
+                "1": { name: "Supermercado", value: -650.20, category: "Alimentação", date: "2025-07-03", account: "Conta Corrente", description: "Compra mensal de supermercado.", type: "expense", icon: "shopping-cart" },
+                "2": { name: "Salário Empresa X", value: 5000.00, category: "Salário", date: "2025-07-02", account: "Conta Salário", description: "Recebimento do salário mensal.", type: "income", icon: "briefcase" },
+                "3": { name: "Aluguel", value: -1500.00, category: "Moradia", date: "2025-07-02", account: "Conta Corrente", description: "Pagamento do aluguel do apartamento.", type: "expense", icon: "home" },
+            };
+            const mockGoals = {
+                "1": { name: "Viagem de Férias", current: 3750, total: 5000, color: 'var(--cor-viagem)', icon: 'plane' },
+                "2": { name: "Bares e Restaurantes", current: 9, total: 100, color: 'var(--cor-alimentacao)', icon: 'utensils' },
+            };
+            const questionnaireQuestions = [
+                "Sinto uma apreensão significativa quando preciso tomar decisões importantes sobre dinheiro.", "Confio mais na minha própria análise detalhada do que na opinião geral do mercado ou de especialistas.", "A segurança e a preservação do meu dinheiro são mais importantes do que a chance de obter grandes lucros.", "Considero as experiências e recomendações de pessoas próximas ao fazer escolhas financeiras.", "Busco um equilíbrio claro entre gastar hoje e guardar para o futuro em minhas finanças.", "Prefiro manter meu dinheiro em aplicações muito seguras, mesmo que rendam abaixo da inflação.", "Prefiro seguir recomendações de consultores financeiros do que fazer minha própria pesquisa aprofundada.", "Tomo decisões financeiras importantes rapidamente, confiando na minha intuição ou visão.", "Quando vejo algo que me agrada, costumo comprá-lo no momento, mesmo sem ter planejado.", "Sinto-me confortável com minha estratégia financeira atual e não vejo necessidade de mudanças drásticas.", "Sinto-me tranquilo(a) e confiante sobre minha situação financeira futura.", "Gasto tempo entendendo a fundo como funcionam os produtos financeiros ou os bens que compro.", "Estou sempre atento(a) a oportunidades de alto crescimento, mesmo que envolvam riscos maiores.", "Minhas decisões de compra são baseadas principalmente em necessidade e valor, independente da opinião de outros.", "É difícil para mim manter um orçamento ou um plano financeiro consistente.", "Mesmo quando tenho dinheiro guardado, a ideia de uma despesa inesperada me causa muita ansiedade.", "Minhas decisões de investimento são baseadas primariamente em dados, fatos e lógica.", "A possibilidade de um ganho financeiro expressivo me motiva mais do que o medo de perder.", "Sinto satisfação em compartilhar boas experiências de compra ou conquistas financeiras com pessoas próximas.", "Reviso minhas finanças periodicamente, mas sem obsessão, apenas para garantir que estou no caminho certo.", "Tenho dificuldade em gastar dinheiro comigo mesmo(a) em coisas que não sejam estritamente necessárias.", "Prefiro estudar detalhadamente os riscos antes de tomar decisões financeiras importantes.", "Se eu tiver uma forte convicção sobre um investimento, estou disposto(a) a concentrar uma parte significativa do meu dinheiro nele.", "Sinto uma satisfação especial ao comprar algo que está sendo muito comentado ou desejado por outros.", "Busco equilibrar segurança e crescimento em minhas decisões financeiras.", "Esta pergunta é para verificar sua atenção. Por favor, marque \"Concordo Parcialmente\".", "Respondo a questionários sempre com total honestidade, mesmo quando as perguntas são pessoais.", "Vejo meus recursos financeiros como dádivas de Deus que devo administrar com sabedoria.", "Busco orientação em princípios bíblicos antes de tomar decisões financeiras importantes.", "Acredito que sou responsável perante Deus pela forma como uso meu dinheiro.", "Considero que meu dinheiro é exclusivamente meu e posso usá-lo como quiser.", "Procuro equilibrar minhas necessidades pessoais com oportunidades de ajudar outros.", "Sinto gratidão pelo que tenho, independente de ter mais ou menos que outros.", "Encontro satisfação em coisas simples, sem precisar de bens materiais para ser feliz.", "Sinto que preciso de mais dinheiro para ser verdadeiramente feliz.", "Consigo distinguir entre desejos e necessidades reais em minhas finanças.", "Mantenho paz interior mesmo quando não posso comprar tudo que gostaria.", "Encontro alegria genuína em ajudar outros financeiramente quando possível.", "Considero doações e ajuda ao próximo como parte essencial do meu planejamento financeiro.", "Prefiro dar de forma discreta, sem buscar reconhecimento público.", "Acredito que devo cuidar primeiro de todas as minhas necessidades antes de ajudar outros.", "Vejo oportunidades de generosidade como bênçãos, não como sacrifícios."
+            ];
+            const questionnaireAnswers = ["Discordo Totalmente", "Discordo", "Neutro", "Concordo", "Concordo Totalmente"];
+            let currentQuestionIndex = 0;
+
+            // --- FUNÇÕES DE RENDERIZAÇÃO E UI ---
+
+            const formatCurrency = (value) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+
+            const getCssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+            const setActivePage = (targetId) => {
+                sidebarLinks.forEach(link => link.classList.toggle('active', link.dataset.target === targetId));
+                mainContentAreas.forEach(area => {
+                    area.classList.toggle('hidden', area.id !== `${targetId}-content`);
+                    if(area.id === `${targetId}-content`) {
+                        area.innerHTML = ''; // Limpa apenas a área ativa antes de renderizar
+                    }
+                });
+                
+                const activeLink = document.querySelector(`.sidebar-link[data-target="${targetId}"]`);
+                let newTitle = 'Dashboard'; // Título padrão
+                 if (activeLink) {
+                    newTitle = activeLink.textContent.trim();
+                } else {
+                    // Títulos para páginas sem link na sidebar
+                    const pageTitles = {
+                        'plans': 'Nossos Planos',
+                        'questionnaire': 'Perfil Financeiro',
+                        'questionnaire-result': 'Resultado do Perfil'
+                    };
+                    newTitle = pageTitles[targetId] || 'Dashboard';
+                }
+                mainTitle.textContent = newTitle;
+                
+                switch(targetId) {
+                    case 'dashboard': renderDashboard(); break;
+                    case 'lancamentos': renderTransactionPage(); break;
+                    case 'relatorios': renderReports(); break;
+                    case 'metas': renderGoalPage(); break;
+                    case 'plans': renderPlans(); break;
+                    case 'questionnaire': renderQuestionnaire(); break;
+                    case 'configuracoes': renderConfiguracoes(); break;
+                }
+                
+                closeRightPanel();
+            };
+
+            const openRightPanel = () => {
+                rightPanel.classList.remove('hidden');
+                rightPanel.classList.add('flex');
+            };
+
+            const closeRightPanel = () => {
+                rightPanel.classList.add('hidden');
+                rightPanel.classList.remove('flex');
+                rightPanel.innerHTML = '';
+                currentTransactionId = null;
+            };
+            window.closeRightPanel = closeRightPanel;
+
+            // --- RENDERIZAÇÃO DE CONTEÚDO PRINCIPAL ---
+            
+            const renderDashboard = () => {
+                const contentArea = document.getElementById('dashboard-content');
+                const template = document.getElementById('template-dashboard');
+                contentArea.appendChild(template.content.cloneNode(true));
+                contentArea.querySelector('#btn-questionnaire').addEventListener('click', () => setActivePage('questionnaire'));
+                lucide.createIcons();
+            };
+            
+            const renderTransactionPage = () => {
+                const contentArea = document.getElementById('lancamentos-content');
+                const template = document.getElementById('template-lancamentos');
+                contentArea.appendChild(template.content.cloneNode(true));
+                renderTransactionList();
+            };
+            
+            const renderGoalPage = () => {
+                const contentArea = document.getElementById('metas-content');
+                const template = document.getElementById('template-metas');
+                contentArea.appendChild(template.content.cloneNode(true));
+                renderGoalList();
+            };
+
+            const renderTransactionList = () => {
+                const listContainer = document.getElementById('transaction-list');
+                if (!listContainer) return;
+                listContainer.innerHTML = '';
+                Object.entries(mockTransactions).forEach(([id, data]) => {
+                    const template = document.getElementById('template-transaction-item');
+                    const clone = template.content.cloneNode(true);
+                    const item = clone.querySelector('.transaction-item');
+                    
+                    item.dataset.id = id;
+                    item.querySelector('.name').textContent = data.name;
+                    item.querySelector('.category').textContent = data.category;
+                    const valueEl = item.querySelector('.value');
+                    valueEl.textContent = formatCurrency(data.value);
+                    valueEl.style.color = data.type === 'income' ? getCssVar('--cor-receita') : getCssVar('--cor-despesa');
+                    
+                    const iconWrapper = item.querySelector('.icon-wrapper');
+                    const icon = document.createElement('i');
+                    icon.dataset.lucide = data.icon;
+                    icon.className = 'w-5 h-5';
+                    icon.style.color = valueEl.style.color;
+                    iconWrapper.appendChild(icon);
+
+                    item.addEventListener('click', () => showTransactionDetails(id));
+                    listContainer.appendChild(clone);
+                });
+                lucide.createIcons();
+            };
+
+            const renderGoalList = () => {
+                const listContainer = document.getElementById('goal-list');
+                if (!listContainer) return;
+                listContainer.innerHTML = '';
+                 Object.entries(mockGoals).forEach(([id, data]) => {
+                    const template = document.getElementById('template-goal-item');
+                    const clone = template.content.cloneNode(true);
+                    const item = clone.querySelector('.goal-card');
+                    
+                    item.dataset.id = id;
+                    item.querySelector('.name').textContent = data.name;
+
+                    const progress = (data.current / data.total) * 100;
+                    const progressBar = item.querySelector('.progress-bar');
+                    progressBar.style.width = `${progress}%`;
+                    progressBar.style.backgroundColor = data.color;
+
+                    item.querySelector('.progress-text').textContent = `${formatCurrency(data.current)} de ${formatCurrency(data.total)}`;
+                    
+                    const iconWrapper = item.querySelector('.icon-wrapper');
+                    const icon = document.createElement('i');
+                    icon.dataset.lucide = data.icon;
+                    icon.className = 'w-5 h-5';
+                    icon.style.color = data.color;
+                    iconWrapper.appendChild(icon);
+
+                    listContainer.appendChild(clone);
+                });
+                lucide.createIcons();
+            };
+            
+            const renderReports = () => {
+                const contentArea = document.getElementById('relatorios-content');
+                const template = document.getElementById('template-relatorios');
+                contentArea.appendChild(template.content.cloneNode(true));
+                createOrUpdateCharts();
+            };
+            
+            const renderPlans = () => {
+                const contentArea = document.getElementById('plans-content');
+                const template = document.getElementById('template-plans');
+                contentArea.appendChild(template.content.cloneNode(true));
+                lucide.createIcons();
+            };
+            
+            const renderQuestionnaire = () => {
+                const contentArea = document.getElementById('questionnaire-content');
+                const template = document.getElementById('template-questionnaire');
+                contentArea.appendChild(template.content.cloneNode(true));
+                loadQuestion(0);
+            };
+
+            const renderConfiguracoes = () => {
+                const contentArea = document.getElementById('configuracoes-content');
+                const template = document.getElementById('template-configuracoes');
+                contentArea.appendChild(template.content.cloneNode(true));
+                lucide.createIcons();
+            };
+
+            const renderQuestionnaireResult = () => {
+                const contentArea = document.getElementById('questionnaire-content'); // Reutiliza a mesma área
+                mainTitle.textContent = 'Resultado do Perfil';
+                contentArea.innerHTML = '';
+                const template = document.getElementById('template-questionnaire-result');
+                contentArea.appendChild(template.content.cloneNode(true));
+                
+                contentArea.querySelector('#result-btn-plans').addEventListener('click', () => setActivePage('plans'));
+                contentArea.querySelector('#result-btn-dashboard').addEventListener('click', () => setActivePage('dashboard'));
+                lucide.createIcons();
+            };
+
+            // --- RENDERIZAÇÃO DO PAINEL DIREITO ---
+
+            const showTransactionDetails = (id) => {
+                currentTransactionId = id;
+                const data = mockTransactions[id];
+                if (!data) return;
+
+                const template = document.getElementById('template-transaction-details');
+                const clone = template.content.cloneNode(true);
+
+                clone.getElementById('detail-name').textContent = data.name;
+                clone.getElementById('detail-value').textContent = formatCurrency(data.value);
+                clone.getElementById('detail-category').textContent = data.category;
+                clone.getElementById('detail-date').textContent = new Date(data.date).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+                clone.getElementById('detail-account').textContent = data.account;
+                clone.getElementById('detail-description').textContent = data.description;
+                
+                const valueEl = clone.getElementById('detail-value');
+                valueEl.style.color = data.type === 'income' ? getCssVar('--cor-receita') : getCssVar('--cor-despesa');
+
+                clone.getElementById('btn-edit-transaction').addEventListener('click', () => showTransactionForm(id));
+                clone.getElementById('btn-delete-transaction').addEventListener('click', () => {
+                    showConfirmationModal('Deseja realmente excluir este lançamento?', () => {
+                        delete mockTransactions[id];
+                        renderTransactionList();
+                        closeRightPanel();
+                    });
+                });
+
+                rightPanel.innerHTML = '';
+                rightPanel.appendChild(clone);
+                lucide.createIcons();
+                openRightPanel();
+            };
+            
+            const showTransactionForm = (id = null) => {
+                currentTransactionId = id;
+                const isEditing = id !== null;
+                const data = isEditing ? mockTransactions[id] : {};
+
+                const template = document.getElementById('template-transaction-form');
+                const clone = template.content.cloneNode(true);
+                
+                clone.getElementById('form-title').textContent = isEditing ? 'Editar Lançamento' : 'Novo Lançamento';
+                clone.querySelector('[name="name"]').value = data.name || '';
+                clone.querySelector('[name="value"]').value = isEditing ? formatCurrency(data.value).replace(/\s/g, '') : '';
+
+                clone.getElementById('btn-save-transaction').addEventListener('click', () => {
+                    alert('Lançamento salvo! (simulação)');
+                    closeRightPanel();
+                });
+
+                rightPanel.innerHTML = '';
+                rightPanel.appendChild(clone);
+                lucide.createIcons();
+                openRightPanel();
+            };
+            
+            const showNotifications = () => {
+                const template = document.getElementById('template-notifications');
+                rightPanel.innerHTML = '';
+                rightPanel.appendChild(template.content.cloneNode(true));
+                lucide.createIcons();
+                openRightPanel();
+            };
+
+            const loadQuestion = (index) => {
+                 if (index >= questionnaireQuestions.length) {
+                    renderQuestionnaireResult();
+                    return;
+                }
+                currentQuestionIndex = index;
+                const questionArea = document.getElementById('questionnaire-content');
+                questionArea.querySelector('#question-text').textContent = questionnaireQuestions[index];
+                questionArea.querySelector('#progress-bar').style.width = `${((index + 1) / questionnaireQuestions.length) * 100}%`;
+                questionArea.querySelector('#question-counter').textContent = `Pergunta ${index + 1} de ${questionnaireQuestions.length}`;
+                
+                const answerOptions = questionArea.querySelector('#answer-options');
+                answerOptions.innerHTML = '';
+                questionnaireAnswers.forEach(answer => {
+                    const button = document.createElement('button');
+                    button.textContent = answer;
+                    button.className = 'w-full py-3 text-lg font-medium rounded-md border-2 border-[var(--cor-borda)] hover:bg-[var(--fundo-card)]';
+                    button.onclick = () => {
+                        answerOptions.querySelectorAll('button').forEach(btn => btn.classList.remove('bg-[var(--cor-acento-dourado)]', 'text-black'));
+                        button.classList.add('bg-[var(--cor-acento-dourado)]', 'text-black');
+                        questionArea.querySelector('#next-question-btn').disabled = false;
+                    };
+                    answerOptions.appendChild(button);
+                });
+
+                questionArea.querySelector('#next-question-btn').onclick = () => loadQuestion(index + 1);
+                questionArea.querySelector('#next-question-btn').disabled = true;
+            };
+
+            const showConfirmationModal = (message, onConfirm) => {
+                const modal = document.getElementById('confirmation-modal');
+                modal.querySelector('#modal-message').textContent = message;
+                modal.classList.remove('hidden');
+
+                const confirmBtn = modal.querySelector('#modal-confirm-btn');
+                const cancelBtn = modal.querySelector('#modal-cancel-btn');
+
+                const confirmHandler = () => {
+                    onConfirm();
+                    hideModal();
+                };
+                const cancelHandler = hideModal;
+
+                const hideModal = () => {
+                    modal.classList.add('hidden');
+                    confirmBtn.removeEventListener('click', confirmHandler);
+                    cancelBtn.removeEventListener('click', cancelHandler);
+                };
+
+                confirmBtn.addEventListener('click', confirmHandler, { once: true });
+                cancelBtn.addEventListener('click', cancelHandler, { once: true });
+            };
+
+            function createOrUpdateCharts() {
+                if (barChartInstance) { barChartInstance.destroy(); }
+                if (pieChartInstance) { pieChartInstance.destroy(); }
+                
+                const textColor = getCssVar('--cor-texto-secundario');
+                const gridColor = getCssVar('--cor-borda');
+
+                const barCtx = document.getElementById('mainBarChart')?.getContext('2d');
+                if(barCtx) {
+                    barChartInstance = new Chart(barCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Abr', 'Mai', 'Jun', 'Jul'],
+                            datasets: [{
+                                label: 'Receitas', data: [5200, 5300, 5500, 5000],
+                                backgroundColor: getCssVar('--cor-receita'), borderRadius: 4,
+                            }, {
+                                label: 'Despesas', data: [3400, 3800, 4100, 2650],
+                                backgroundColor: getCssVar('--cor-despesa'), borderRadius: 4,
+                            }]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: textColor } } }, scales: { y: { beginAtZero: true, ticks: { color: textColor }, grid: { color: gridColor } }, x: { ticks: { color: textColor }, grid: { display: false } } } }
+                    });
+                }
+
+                const pieCtx = document.getElementById('pieChart')?.getContext('2d');
+                if(pieCtx) {
+                    pieChartInstance = new Chart(pieCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Moradia', 'Alimentação', 'Transporte'],
+                            datasets: [{ data: [1500, 650.20, 500], backgroundColor: [getCssVar('--cor-moradia'), getCssVar('--cor-alimentacao'), getCssVar('--cor-transporte')], borderColor: getCssVar('--fundo-card'), borderWidth: 4, hoverOffset: 8 }]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'bottom', labels: { color: textColor } } } }
+                    });
+                }
+            }
+
+            // --- INICIALIZAÇÃO E EVENT LISTENERS ---
+            
+            function initializeApp() {
+                loginScreen.classList.add('hidden');
+                appWrapper.classList.remove('hidden');
+                appWrapper.classList.add('flex');
+                
+                sidebarLinks.forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        setActivePage(link.dataset.target);
+                    });
+                });
+
+                document.getElementById('btn-new-transaction').addEventListener('click', () => showTransactionForm());
+                document.getElementById('btn-notifications').addEventListener('click', showNotifications);
+                document.getElementById('btn-plans').addEventListener('click', () => setActivePage('plans'));
+
+                setActivePage('dashboard');
+            }
+
+            btnLogin.addEventListener('click', initializeApp);
+
+        });
+    </script>
+</body>
+</html>
