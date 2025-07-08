@@ -93,7 +93,7 @@
     <div id="login-screen" class="flex h-screen w-full">
         <div class="w-full md:w-1/2 flex items-center justify-center bg-[var(--fundo-principal)] p-8">
             <div class="w-full max-w-md text-center">
-                <img src="https://placehold.co/224x80/001a3a/C4A35A?text=Castelo+Forte" alt="Logo Castelo Forte" class="mx-auto w-56 mb-8" onerror="this.onerror=null;this.src='https://placehold.co/224x80/001a3a/FFFFFF?text=Logo+Error';">
+                <img src="./logo castelo forte.png" alt="Logo Castelo Forte" class="mx-auto w-56 mb-8" onerror="this.onerror=null;this.src='https://placehold.co/224x80/001a3a/FFFFFF?text=Logo+Error';">
                 <form class="space-y-4" onsubmit="event.preventDefault();">
                     <input type="email" required class="appearance-none block w-full px-3 py-3 bg-[var(--fundo-elemento)] border border-[var(--cor-borda)] placeholder-[var(--cor-texto-secundario)] text-[var(--cor-texto-principal)] rounded-md focus:outline-none focus:ring-[var(--cor-acento-dourado)] focus:border-[var(--cor-acento-dourado)] sm:text-sm" placeholder="Email">
                     <input type="password" required class="appearance-none block w-full px-3 py-3 bg-[var(--fundo-elemento)] border border-[var(--cor-borda)] placeholder-[var(--cor-texto-secundario)] text-[var(--cor-texto-principal)] rounded-md focus:outline-none focus:ring-[var(--cor-acento-dourado)] focus:border-[var(--cor-acento-dourado)] sm:text-sm" placeholder="Senha">
@@ -120,7 +120,7 @@
         <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-[var(--fundo-secundario)] p-4 flex flex-col transform -translate-x-full lg:relative lg:translate-x-0 transition-transform duration-300 ease-in-out">
             <!-- Header do Menu Mobile -->
             <div class="flex items-center justify-between lg:justify-center mb-8">
-                <img src="https://placehold.co/160x60/002147/C4A35A?text=Castelo+Forte" alt="Logo Castelo Forte" class="w-40" onerror="this.onerror=null;this.src='https://placehold.co/160x60/002147/FFFFFF?text=Logo+Error';">
+                <img src="./logo castelo forte.png" alt="Logo Castelo Forte" class="w-40" onerror="this.onerror=null;this.src='https://placehold.co/160x60/002147/FFFFFF?text=Logo+Error';">
                 <button id="close-menu-btn" class="lg:hidden text-[var(--cor-texto-secundario)]">
                     <i data-lucide="x" class="w-7 h-7"></i>
                 </button>
@@ -221,7 +221,7 @@
     <template id="template-dashboard">
         <div class="space-y-6">
             <!-- Cards de Resumo -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-1 flex-wrap lg:grid-cols- gap-6">
                 <div class="bg-[var(--fundo-card)] p-6 rounded-xl">
                     <h3 class="text-md text-[var(--cor-texto-secundario)]">Saldo disponível</h3>
                     <p class="text-4xl font-bold text-[var(--cor-acento-dourado)] mt-2" id="dashboard-balance">R$ 0,00</p>
