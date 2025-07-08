@@ -111,7 +111,7 @@
     </div>
 
     <!-- APLICAÇÃO PRINCIPAL (Inicialmente escondida) -->
-    <div id="app-wrapper" class="relative h-screen w-full hidden">
+    <div id="app-wrapper" class="relative flex h-screen w-full hidden">
         
         <!-- OVERLAY PARA MENU MOBILE -->
         <div id="menu-overlay" class="fixed inset-0 bg-black/60 z-30 hidden lg:hidden"></div>
@@ -166,9 +166,9 @@
             </div>
         </aside>
         
-        <div class="flex flex-1 flex-col">
+        <div class="flex flex-1 flex-col min-w-0">
             <!-- COLUNA CENTRAL: CONTEÚDO PRINCIPAL -->
-            <main class="flex-1 bg-[var(--fundo-principal)] flex flex-col min-w-0">
+            <main class="flex-1 bg-[var(--fundo-principal)] flex flex-col">
                 <!-- Header da Coluna Central -->
                 <header class="flex items-center justify-between h-20 px-4 sm:px-8 shrink-0 border-b border-[var(--cor-borda)]">
                     <div class="flex items-center gap-4">
@@ -280,7 +280,7 @@
     </template>
     
     <template id="template-metas">
-         <div id="goal-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+         <div id="goal-list" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
     </template>
 
     <template id="template-configuracoes">
@@ -337,14 +337,14 @@
 
     <template id="template-transaction-item">
         <div class="transaction-item bg-[var(--fundo-card)] p-4 rounded-lg flex justify-between items-center cursor-pointer hover:bg-white/5 border-2 border-transparent hover:border-[var(--cor-acento-dourado)] transition-all">
-            <div class="flex items-center">
-                <div class="icon-wrapper w-10 h-10 flex items-center justify-center rounded-full bg-[var(--fundo-secundario)] mr-4"></div>
-                <div>
-                    <p class="name font-semibold text-[var(--cor-texto-principal)]"></p>
-                    <p class="category text-sm text-[var(--cor-texto-secundario)]"></p>
+            <div class="flex items-center min-w-0">
+                <div class="icon-wrapper w-10 h-10 flex items-center justify-center rounded-full bg-[var(--fundo-secundario)] mr-4 flex-shrink-0"></div>
+                <div class="min-w-0">
+                    <p class="name font-semibold text-[var(--cor-texto-principal)] truncate"></p>
+                    <p class="category text-sm text-[var(--cor-texto-secundario)] truncate"></p>
                 </div>
             </div>
-            <p class="value font-bold text-lg"></p>
+            <p class="value font-bold text-lg text-right ml-2"></p>
         </div>
     </template>
 
@@ -789,6 +789,9 @@
                         App.els.rightPanel.innerHTML = '';
                         App.els.rightPanel.appendChild(template.content.cloneNode(true));
                         
+                        lucide.createIcons();
+                        App.els.rightPanel.querySelector('.close-panel-btn').addEventListener('click', App.ui.closeRightPanel);
+
                         App.els.rightPanel.querySelector('#goal-detail-title').textContent = data.name;
                         App.els.rightPanel.querySelector('#goal-detail-current').textContent = App.utils.formatCurrency(data.current);
                         App.els.rightPanel.querySelector('#goal-detail-total').textContent = App.utils.formatCurrency(data.total);
@@ -812,8 +815,6 @@
                             contributionsList.innerHTML = `<p class="text-center text-sm text-[var(--cor-texto-secundario)] py-4">Nenhuma contribuição para esta meta.</p>`;
                         }
                         
-                        App.els.rightPanel.querySelector('.close-panel-btn').addEventListener('click', App.ui.closeRightPanel);
-                        lucide.createIcons();
                         App.ui.openRightPanel();
                     },
 
@@ -825,6 +826,9 @@
                         const template = document.getElementById('template-transaction-details');
                         App.els.rightPanel.innerHTML = '';
                         App.els.rightPanel.appendChild(template.content.cloneNode(true));
+                        
+                        lucide.createIcons();
+                        App.els.rightPanel.querySelector('.close-panel-btn').addEventListener('click', App.ui.closeRightPanel);
 
                         App.els.rightPanel.querySelector('#detail-name').textContent = data.name;
                         App.els.rightPanel.querySelector('#detail-value').textContent = App.utils.formatCurrency(data.value);
@@ -840,13 +844,11 @@
                         App.els.rightPanel.querySelector('#btn-delete-transaction').addEventListener('click', () => {
                             App.ui.showConfirmationModal('Deseja realmente excluir este lançamento?', () => {
                                 delete App.data.transactions[id];
-                                App.pages.renderTransactionList();
+                                if(App.state.currentPage === 'lancamentos') App.pages.renderTransactionList();
                                 App.ui.closeRightPanel();
                             });
                         });
                         
-                        App.els.rightPanel.querySelector('.close-panel-btn').addEventListener('click', App.ui.closeRightPanel);
-                        lucide.createIcons();
                         App.ui.openRightPanel();
                     },
 
@@ -858,6 +860,9 @@
                         const template = document.getElementById('template-transaction-form');
                         App.els.rightPanel.innerHTML = '';
                         App.els.rightPanel.appendChild(template.content.cloneNode(true));
+
+                        lucide.createIcons();
+                        App.els.rightPanel.querySelector('.close-panel-btn').addEventListener('click', App.ui.closeRightPanel);
                         
                         App.els.rightPanel.querySelector('#form-title').textContent = isEditing ? 'Editar Lançamento' : 'Novo Lançamento';
                         App.els.rightPanel.querySelector('[name="name"]').value = data.name || '';
@@ -913,8 +918,6 @@
                             }
                         });
                         
-                        App.els.rightPanel.querySelector('.close-panel-btn').addEventListener('click', App.ui.closeRightPanel);
-                        lucide.createIcons();
                         App.ui.openRightPanel();
                     },
 
@@ -1013,8 +1016,10 @@
                 // --- INICIALIZAÇÃO ---
                 init: () => {
                     document.getElementById('btn-login').addEventListener('click', () => {
-                        App.els.loginScreen.style.display = 'none';
-                        App.els.appWrapper.style.display = 'flex';
+                        App.els.loginScreen.classList.remove('flex');
+                        App.els.loginScreen.classList.add('hidden');
+                        App.els.appWrapper.classList.remove('hidden');
+                        App.els.appWrapper.classList.add('flex');
                         
                         document.querySelectorAll('.sidebar-link').forEach(link => {
                             link.addEventListener('click', (e) => {
@@ -1035,15 +1040,17 @@
                             const template = document.getElementById('template-notifications');
                             App.els.rightPanel.innerHTML = '';
                             App.els.rightPanel.appendChild(template.content.cloneNode(true));
-                            App.els.rightPanel.querySelector('.close-panel-btn').addEventListener('click', App.ui.closeRightPanel);
                             lucide.createIcons();
+                            App.els.rightPanel.querySelector('.close-panel-btn').addEventListener('click', App.ui.closeRightPanel);
                             App.ui.openRightPanel();
                         });
                         document.getElementById('btn-plans').addEventListener('click', () => App.pages.render('plans'));
                         document.getElementById('btn-logout').addEventListener('click', (e) => {
                             e.preventDefault();
-                            App.els.appWrapper.style.display = 'none';
-                            App.els.loginScreen.style.display = 'flex';
+                            App.els.appWrapper.classList.remove('flex');
+                            App.els.appWrapper.classList.add('hidden');
+                            App.els.loginScreen.classList.remove('hidden');
+                            App.els.loginScreen.classList.add('flex');
                         });
         
                         App.pages.render('dashboard');
