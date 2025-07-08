@@ -18,7 +18,7 @@
             font-family: 'Inter', sans-serif;
             background-color: var(--fundo-principal);
             color: var(--cor-texto-principal);
-            overflow-y: hidden; /* Evita scroll na página inteira */
+            /* overflow-y: hidden;  REMOVIDO PARA PERMITIR SCROLL */
         }
         :root {
             /* Paleta de Cores com Azul Marinho e Dourado */
@@ -168,7 +168,7 @@
         
         <div class="flex flex-1 flex-col min-w-0">
             <!-- COLUNA CENTRAL: CONTEÚDO PRINCIPAL -->
-            <main class="flex-1 bg-[var(--fundo-principal)] flex flex-col">
+            <main class="flex-1 bg-[var(--fundo-principal)] flex flex-col h-screen">
                 <!-- Header da Coluna Central -->
                 <header class="flex items-center justify-between h-20 px-4 sm:px-8 shrink-0 border-b border-[var(--cor-borda)]">
                     <div class="flex items-center gap-4">
@@ -199,7 +199,7 @@
         </div>
 
         <!-- COLUNA DIREITA: PAINEL CONTEXTUAL -->
-        <section id="right-panel" class="fixed inset-0 z-50 w-full bg-[var(--fundo-secundario)] flex-col hidden lg:relative lg:w-96 lg:border-l lg:border-[var(--cor-borda)]">
+        <section id="right-panel" class="fixed inset-0 z-50 w-full bg-[var(--fundo-secundario)] flex-col hidden lg:relative lg:w-96 lg:border-l lg:border-[var(--cor-borda)] lg:hidden">
             <!-- O conteúdo aqui será inserido dinamicamente via JS -->
         </section>
 
@@ -220,32 +220,42 @@
     <!-- TEMPLATES PARA CONTEÚDO DINÂMICO -->
     <template id="template-dashboard">
         <div class="space-y-6">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="bg-[var(--fundo-card)] p-6 rounded-xl text-center lg:col-span-1">
+            <!-- Cards de Resumo -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-[var(--fundo-card)] p-6 rounded-xl">
                     <h3 class="text-md text-[var(--cor-texto-secundario)]">Saldo disponível</h3>
-                    <p class="text-4xl font-bold text-[var(--cor-acento-dourado)] mt-2">R$ 12.450,75</p>
+                    <p class="text-4xl font-bold text-[var(--cor-acento-dourado)] mt-2" id="dashboard-balance">R$ 0,00</p>
                 </div>
-                <div class="bg-[var(--fundo-card)] p-6 rounded-xl lg:col-span-2">
-                     <h3 class="text-lg font-semibold text-[var(--cor-texto-principal)] mb-4">Últimos Lançamentos</h3>
-                     <div class="space-y-4">
-                         <div class="flex items-center justify-between"><div class="flex items-center space-x-3"><i data-lucide="arrow-up-circle" class="w-6 h-6 text-[var(--cor-receita)]"></i><p class="text-[var(--cor-texto-principal)]">Salário</p></div><p class="font-medium text-[var(--cor-receita)]">+ R$ 5.000,00</p></div>
-                         <div class="flex items-center justify-between"><div class="flex items-center space-x-3"><i data-lucide="arrow-down-circle" class="w-6 h-6 text-[var(--cor-despesa)]"></i><p class="text-[var(--cor-texto-principal)]">Aluguel</p></div><p class="font-medium text-[var(--cor-despesa)]">- R$ 1.500,00</p></div>
-                     </div>
+                <div class="bg-[var(--fundo-card)] p-6 rounded-xl">
+                    <h3 class="text-md text-[var(--cor-texto-secundario)]">Receitas do Mês</h3>
+                    <p class="text-4xl font-bold text-[var(--cor-receita)] mt-2" id="dashboard-income">R$ 0,00</p>
+                </div>
+                <div class="bg-[var(--fundo-card)] p-6 rounded-xl">
+                    <h3 class="text-md text-[var(--cor-texto-secundario)]">Despesas do Mês</h3>
+                    <p class="text-4xl font-bold text-[var(--cor-despesa)] mt-2" id="dashboard-expense">R$ 0,00</p>
                 </div>
             </div>
-             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                <div id="btn-questionnaire" class="bg-[var(--fundo-card)] p-6 rounded-xl text-center cursor-pointer hover:bg-white/5 transition-colors">
-                    <i data-lucide="file-text" class="w-10 h-10 text-[var(--cor-acento-dourado)] mx-auto"></i>
-                    <h3 class="text-lg font-bold text-[var(--cor-texto-principal)] mt-4">Descubra seu Perfil Financeiro</h3>
-                    <p class="text-sm text-[var(--cor-texto-secundario)] mt-2">Responda algumas perguntas para entendermos melhor seus objetivos.</p>
-                    <button class="w-full mt-4 py-3 px-4 text-sm font-bold rounded-md text-[var(--fundo-principal)] bg-[var(--cor-acento-dourado)] hover:bg-[var(--cor-acento-dourado-hover)] transition-colors">Começar Questionário</button>
+
+            <!-- Gráfico e Meta -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2 bg-[var(--fundo-card)] p-6 rounded-xl">
+                    <h3 class="text-lg font-semibold text-[var(--cor-texto-principal)] mb-4">Despesas por Categoria</h3>
+                    <div class="h-64"><canvas id="dashboardPieChart"></canvas></div>
                 </div>
-                <div class="bg-[var(--fundo-card)] p-6 rounded-xl text-center cursor-pointer hover:bg-white/5 transition-colors">
-                    <i data-lucide="landmark" class="w-10 h-10 text-[var(--cor-acento-dourado)] mx-auto"></i>
-                    <h3 class="text-lg font-bold text-[var(--cor-texto-principal)] mt-4">Conexão Bancária</h3>
-                    <p class="text-sm text-[var(--cor-texto-secundario)] mt-2">Conecte seus bancos e importe seus lançamentos automaticamente.</p>
-                    <button class="w-full mt-4 py-3 px-4 text-sm font-bold rounded-md text-[var(--fundo-principal)] bg-[var(--cor-acento-dourado)] hover:bg-[var(--cor-acento-dourado-hover)] transition-colors">Conectar agora</button>
+                <div class="bg-[var(--fundo-card)] p-6 rounded-xl flex flex-col">
+                    <h3 class="text-lg font-semibold text-[var(--cor-texto-principal)] mb-4">Meta Principal</h3>
+                    <div id="dashboard-goal-card" class="flex-1 flex flex-col justify-center items-center text-center">
+                        <!-- Conteúdo da meta injetado via JS -->
+                    </div>
                 </div>
+            </div>
+
+            <!-- Últimos Lançamentos -->
+            <div class="bg-[var(--fundo-card)] p-6 rounded-xl">
+                 <h3 class="text-lg font-semibold text-[var(--cor-texto-principal)] mb-4">Últimos Lançamentos</h3>
+                 <div id="dashboard-transaction-list" class="space-y-4">
+                     <!-- Lançamentos injetados via JS -->
+                 </div>
             </div>
         </div>
     </template>
@@ -267,12 +277,12 @@
     </template>
     
     <template id="template-relatorios">
-        <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
-            <div class="lg:col-span-3 bg-[var(--fundo-card)] p-6 rounded-xl">
+        <div class="grid grid-cols-1 xl:grid-cols-5 gap-6">
+            <div class="xl:col-span-3 bg-[var(--fundo-card)] p-6 rounded-xl">
                 <h3 class="text-lg font-semibold text-[var(--cor-texto-principal)] mb-4">Entradas vs Saídas (Últimos 4 meses)</h3>
                 <div class="h-80"><canvas id="mainBarChart"></canvas></div>
             </div>
-            <div class="lg:col-span-2 bg-[var(--fundo-card)] p-6 rounded-xl">
+            <div class="xl:col-span-2 bg-[var(--fundo-card)] p-6 rounded-xl">
                 <h3 class="text-lg font-semibold text-[var(--cor-texto-principal)] mb-4">Despesas por Categoria (Julho)</h3>
                 <div class="h-80"><canvas id="pieChart"></canvas></div>
             </div>
@@ -280,7 +290,7 @@
     </template>
     
     <template id="template-metas">
-         <div id="goal-list" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+         <div id="goal-list" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 gap-6"></div>
     </template>
 
     <template id="template-configuracoes">
@@ -513,7 +523,7 @@
         <div class="max-w-5xl mx-auto text-center">
             <h2 class="text-3xl font-bold">Evolua sua jornada financeira</h2>
             <p class="text-lg text-[var(--cor-texto-secundario)] mt-2 mb-10">Escolha o plano que melhor se adapta às suas necessidades.</p>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
                 <!-- Plano 1 -->
                 <div class="bg-[var(--fundo-card)] p-6 rounded-lg border-2 border-transparent hover:border-[var(--cor-acento-dourado)] transition-colors flex flex-col">
                     <h4 class="font-bold text-xl">Plano Essencial</h4>
@@ -581,6 +591,7 @@
                     activeFilter: 'all',
                     barChart: null,
                     pieChart: null,
+                    dashboardPieChart: null,
                 },
 
                 // --- DADOS MOCK ---
@@ -653,7 +664,7 @@
                     },
 
                     dashboard: () => {
-                        App.els.mainContentContainer.querySelector('#btn-questionnaire').addEventListener('click', () => App.pages.render('questionnaire'));
+                        App.ui.renderDashboardContent();
                     },
                     
                     lancamentos: () => {
@@ -773,12 +784,93 @@
                     },
 
                     openRightPanel: () => {
-                        App.els.rightPanel.classList.remove('hidden');
-                        App.els.rightPanel.classList.add('flex');
+                        App.els.rightPanel.classList.remove('hidden', 'lg:hidden');
+                        App.els.rightPanel.classList.add('flex', 'lg:flex');
                     },
                     closeRightPanel: () => {
-                        App.els.rightPanel.classList.add('hidden');
-                        App.els.rightPanel.classList.remove('flex');
+                        App.els.rightPanel.classList.add('hidden', 'lg:hidden');
+                        App.els.rightPanel.classList.remove('flex', 'lg:flex');
+                    },
+
+                    renderDashboardContent: () => {
+                        const { transactions, goals } = App.data;
+                        const now = App.state.currentDate;
+
+                        // Calcular totais
+                        let totalIncome = 0;
+                        let totalExpense = 0;
+                        let totalBalance = 0;
+                        const expenseByCategory = {};
+
+                        Object.values(transactions).forEach(t => {
+                            const transactionDate = new Date(t.date);
+                            if (transactionDate.getMonth() === now.getMonth() && transactionDate.getFullYear() === now.getFullYear()) {
+                                if (t.type === 'income') totalIncome += t.value;
+                                if (t.type === 'expense') {
+                                    totalExpense += t.value;
+                                    expenseByCategory[t.category] = (expenseByCategory[t.category] || 0) + Math.abs(t.value);
+                                }
+                            }
+                            totalBalance += t.value;
+                        });
+
+                        // Atualizar cards de resumo
+                        document.getElementById('dashboard-balance').textContent = App.utils.formatCurrency(totalBalance);
+                        document.getElementById('dashboard-income').textContent = App.utils.formatCurrency(totalIncome);
+                        document.getElementById('dashboard-expense').textContent = App.utils.formatCurrency(totalExpense);
+                        
+                        // Renderizar meta principal
+                        const goalCard = document.getElementById('dashboard-goal-card');
+                        const firstGoalId = Object.keys(goals)[0];
+                        if(firstGoalId && goalCard) {
+                            const goal = goals[firstGoalId];
+                            const progress = (goal.current / goal.total) * 100;
+                            goalCard.innerHTML = `
+                                <i data-lucide="${goal.icon}" class="w-12 h-12 mb-3" style="color: ${goal.color};"></i>
+                                <p class="font-semibold text-lg">${goal.name}</p>
+                                <div class="w-full bg-gray-700 rounded-full h-2.5 my-2"><div class="h-2.5 rounded-full" style="width: ${progress}%; background-color: ${goal.color};"></div></div>
+                                <p class="text-sm text-[var(--cor-texto-secundario)]">${App.utils.formatCurrency(goal.current)} de ${App.utils.formatCurrency(goal.total)}</p>
+                            `;
+                        } else if(goalCard) {
+                            goalCard.innerHTML = `<p class="text-[var(--cor-texto-secundario)]">Nenhuma meta definida.</p>`;
+                        }
+
+                        // Renderizar lista de transações
+                        const transactionList = document.getElementById('dashboard-transaction-list');
+                        transactionList.innerHTML = '';
+                        Object.values(transactions).slice(0, 4).forEach(t => {
+                            const div = document.createElement('div');
+                            div.className = 'flex items-center justify-between';
+                            div.innerHTML = `
+                                <div class="flex items-center space-x-3">
+                                    <i data-lucide="${t.type === 'income' ? 'arrow-up-circle' : 'arrow-down-circle'}" class="w-6 h-6" style="color: ${t.type === 'income' ? 'var(--cor-receita)' : 'var(--cor-despesa)'};"></i>
+                                    <p class="text-[var(--cor-texto-principal)]">${t.name}</p>
+                                </div>
+                                <p class="font-medium" style="color: ${t.type === 'income' ? 'var(--cor-receita)' : 'var(--cor-despesa)'};">${App.utils.formatCurrency(t.value)}</p>
+                            `;
+                            transactionList.appendChild(div);
+                        });
+
+                        // Renderizar gráfico de pizza do dashboard
+                        if (App.state.dashboardPieChart) App.state.dashboardPieChart.destroy();
+                        const pieCtx = document.getElementById('dashboardPieChart')?.getContext('2d');
+                        if (pieCtx) {
+                            App.state.dashboardPieChart = new Chart(pieCtx, {
+                                type: 'doughnut',
+                                data: {
+                                    labels: Object.keys(expenseByCategory),
+                                    datasets: [{ 
+                                        data: Object.values(expenseByCategory), 
+                                        backgroundColor: [App.utils.getCssVar('--cor-moradia'), App.utils.getCssVar('--cor-alimentacao'), App.utils.getCssVar('--cor-transporte'), App.utils.getCssVar('--cor-viagem')], 
+                                        borderColor: App.utils.getCssVar('--fundo-card'), 
+                                        borderWidth: 4, 
+                                        hoverOffset: 8 
+                                    }]
+                                },
+                                options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'bottom', labels: { color: App.utils.getCssVar('--cor-texto-secundario') } } } }
+                            });
+                        }
+                        lucide.createIcons();
                     },
 
                     showGoalDetails: (id) => {
@@ -845,6 +937,7 @@
                             App.ui.showConfirmationModal('Deseja realmente excluir este lançamento?', () => {
                                 delete App.data.transactions[id];
                                 if(App.state.currentPage === 'lancamentos') App.pages.renderTransactionList();
+                                if(App.state.currentPage === 'dashboard') App.pages.render('dashboard');
                                 App.ui.closeRightPanel();
                             });
                         });
@@ -915,6 +1008,9 @@
                             App.ui.closeRightPanel();
                             if(App.state.currentPage === 'lancamentos') {
                                 App.pages.renderTransactionList();
+                            }
+                            if(App.state.currentPage === 'dashboard') {
+                                App.pages.render('dashboard');
                             }
                         });
                         
@@ -1063,3 +1159,4 @@
     </script>
 </body>
 </html>
+
