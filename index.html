@@ -59,7 +59,7 @@
         }
 
         /* Estilo para link/botão ativo */
-        .sidebar-link.active, .filter-btn.active, .category-btn.selected {
+        .sidebar-link.active, .filter-btn.active {
             background-color: var(--fundo-card);
             color: var(--cor-acento-dourado);
             font-weight: 600;
@@ -91,15 +91,9 @@
 
     <!-- TELA DE LOGIN -->
     <div id="login-screen" class="flex h-screen w-full">
-        <div class="w-1/2 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=2511&auto=format&fit=crop');">
-            <div class="bg-black/60 w-full h-full flex flex-col justify-end p-12">
-                <h1 class="text-4xl font-bold text-white">Construa seu <span class="text-[var(--cor-acento-dourado)]">futuro financeiro</span>, tijolo por tijolo.</h1>
-                <p class="text-lg text-gray-300 mt-4">A sua fortaleza financeira começa com o controlo e a clareza que o Castelo Forte oferece.</p>
-            </div>
-        </div>
-        <div class="w-1/2 flex items-center justify-center bg-[var(--fundo-principal)]">
-            <div class="w-full max-w-md text-center p-6">
-                <img src="logo castelo forte.png" alt="Logo Castelo Forte" class="mx-auto w-56 mb-8">
+        <div class="w-full md:w-1/2 flex items-center justify-center bg-[var(--fundo-principal)] p-8">
+            <div class="w-full max-w-md text-center">
+                <img src="https://placehold.co/224x80/001a3a/C4A35A?text=Castelo+Forte" alt="Logo Castelo Forte" class="mx-auto w-56 mb-8" onerror="this.onerror=null;this.src='https://placehold.co/224x80/001a3a/FFFFFF?text=Logo+Error';">
                 <form class="space-y-4" onsubmit="event.preventDefault();">
                     <input type="email" required class="appearance-none block w-full px-3 py-3 bg-[var(--fundo-elemento)] border border-[var(--cor-borda)] placeholder-[var(--cor-texto-secundario)] text-[var(--cor-texto-principal)] rounded-md focus:outline-none focus:ring-[var(--cor-acento-dourado)] focus:border-[var(--cor-acento-dourado)] sm:text-sm" placeholder="Email">
                     <input type="password" required class="appearance-none block w-full px-3 py-3 bg-[var(--fundo-elemento)] border border-[var(--cor-borda)] placeholder-[var(--cor-texto-secundario)] text-[var(--cor-texto-principal)] rounded-md focus:outline-none focus:ring-[var(--cor-acento-dourado)] focus:border-[var(--cor-acento-dourado)] sm:text-sm" placeholder="Senha">
@@ -108,16 +102,28 @@
                 <p class="mt-8 text-center text-sm text-[var(--cor-texto-secundario)]">Não tem uma conta? <a href="#" class="font-medium text-[var(--cor-acento-dourado)] hover:text-[var(--cor-acento-dourado-hover)] transition-colors">Crie uma conta</a></p>
             </div>
         </div>
+        <div class="hidden md:block w-1/2 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=2511&auto=format&fit=crop');">
+            <div class="bg-black/60 w-full h-full flex flex-col justify-end p-12">
+                <h1 class="text-4xl font-bold text-white">Construa seu <span class="text-[var(--cor-acento-dourado)]">futuro financeiro</span>, tijolo por tijolo.</h1>
+                <p class="text-lg text-gray-300 mt-4">A sua fortaleza financeira começa com o controlo e a clareza que o Castelo Forte oferece.</p>
+            </div>
+        </div>
     </div>
 
     <!-- APLICAÇÃO PRINCIPAL (Inicialmente escondida) -->
-    <div id="app-wrapper" class="flex h-screen hidden">
+    <div id="app-wrapper" class="relative h-screen w-full hidden">
+        
+        <!-- OVERLAY PARA MENU MOBILE -->
+        <div id="menu-overlay" class="fixed inset-0 bg-black/60 z-30 hidden lg:hidden"></div>
 
         <!-- COLUNA ESQUERDA: NAVEGAÇÃO (SIDEBAR) -->
-        <aside class="w-64 bg-[var(--fundo-secundario)] p-4 flex flex-col shrink-0">
-            <!-- Logo -->
-            <div class="flex items-center justify-center mb-8">
-                <img src="logo castelo forte.png" alt="Logo Castelo Forte" class="w-40">
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-[var(--fundo-secundario)] p-4 flex flex-col transform -translate-x-full lg:relative lg:translate-x-0 transition-transform duration-300 ease-in-out">
+            <!-- Header do Menu Mobile -->
+            <div class="flex items-center justify-between lg:justify-center mb-8">
+                <img src="https://placehold.co/160x60/002147/C4A35A?text=Castelo+Forte" alt="Logo Castelo Forte" class="w-40" onerror="this.onerror=null;this.src='https://placehold.co/160x60/002147/FFFFFF?text=Logo+Error';">
+                <button id="close-menu-btn" class="lg:hidden text-[var(--cor-texto-secundario)]">
+                    <i data-lucide="x" class="w-7 h-7"></i>
+                </button>
             </div>
 
             <!-- Botão Novo Lançamento -->
@@ -159,34 +165,41 @@
                 </div>
             </div>
         </aside>
-
-        <!-- COLUNA CENTRAL: CONTEÚDO PRINCIPAL -->
-        <main class="flex-1 bg-[var(--fundo-principal)] flex flex-col">
-            <!-- Header da Coluna Central -->
-            <header class="flex items-center justify-between h-20 px-8 shrink-0 border-b border-[var(--cor-borda)]">
-                <h1 id="main-title" class="text-2xl font-bold text-[var(--cor-texto-principal)]">Dashboard</h1>
-                <div class="flex items-center space-x-6">
-                    <div id="btn-notifications" class="relative cursor-pointer">
-                        <i data-lucide="bell" class="w-6 h-6 text-[var(--cor-texto-secundario)] hover:text-[var(--cor-acento-dourado)] transition-colors"></i>
-                        <span class="absolute -top-1 -right-1 flex h-3 w-3">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--cor-despesa)] opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-3 w-3 bg-[var(--cor-despesa)]"></span>
-                        </span>
+        
+        <div class="flex flex-1 flex-col">
+            <!-- COLUNA CENTRAL: CONTEÚDO PRINCIPAL -->
+            <main class="flex-1 bg-[var(--fundo-principal)] flex flex-col min-w-0">
+                <!-- Header da Coluna Central -->
+                <header class="flex items-center justify-between h-20 px-4 sm:px-8 shrink-0 border-b border-[var(--cor-borda)]">
+                    <div class="flex items-center gap-4">
+                        <button id="hamburger-btn" class="lg:hidden text-[var(--cor-texto-secundario)]">
+                            <i data-lucide="menu" class="w-7 h-7"></i>
+                        </button>
+                        <h1 id="main-title" class="text-2xl font-bold text-[var(--cor-texto-principal)]">Dashboard</h1>
                     </div>
-                    <div id="btn-plans" class="cursor-pointer">
-                        <i data-lucide="gem" class="w-6 h-6 text-[var(--cor-texto-secundario)] hover:text-[var(--cor-acento-dourado)] transition-colors"></i>
+                    <div class="flex items-center space-x-4 sm:space-x-6">
+                        <div id="btn-notifications" class="relative cursor-pointer">
+                            <i data-lucide="bell" class="w-6 h-6 text-[var(--cor-texto-secundario)] hover:text-[var(--cor-acento-dourado)] transition-colors"></i>
+                            <span class="absolute -top-1 -right-1 flex h-3 w-3">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--cor-despesa)] opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-3 w-3 bg-[var(--cor-despesa)]"></span>
+                            </span>
+                        </div>
+                        <div id="btn-plans" class="cursor-pointer">
+                            <i data-lucide="gem" class="w-6 h-6 text-[var(--cor-texto-secundario)] hover:text-[var(--cor-acento-dourado)] transition-colors"></i>
+                        </div>
                     </div>
+                </header>
+                
+                <!-- Conteúdo Dinâmico da Coluna Central -->
+                <div id="main-content-container" class="main-column-content flex-1 p-4 sm:p-8 overflow-y-auto">
+                    <!-- As páginas serão renderizadas aqui -->
                 </div>
-            </header>
-            
-            <!-- Conteúdo Dinâmico da Coluna Central -->
-            <div id="main-content-container" class="main-column-content flex-1 p-8 overflow-y-auto">
-                <!-- As páginas serão renderizadas aqui -->
-            </div>
-        </main>
+            </main>
+        </div>
 
         <!-- COLUNA DIREITA: PAINEL CONTEXTUAL -->
-        <section id="right-panel" class="w-96 bg-[var(--fundo-secundario)] border-l border-[var(--cor-borda)] flex-col hidden">
+        <section id="right-panel" class="fixed inset-0 z-50 w-full bg-[var(--fundo-secundario)] flex-col hidden lg:relative lg:w-96 lg:border-l lg:border-[var(--cor-borda)]">
             <!-- O conteúdo aqui será inserido dinamicamente via JS -->
         </section>
 
@@ -207,12 +220,12 @@
     <!-- TEMPLATES PARA CONTEÚDO DINÂMICO -->
     <template id="template-dashboard">
         <div class="space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-[var(--fundo-card)] p-6 rounded-xl text-center col-span-1">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="bg-[var(--fundo-card)] p-6 rounded-xl text-center lg:col-span-1">
                     <h3 class="text-md text-[var(--cor-texto-secundario)]">Saldo disponível</h3>
                     <p class="text-4xl font-bold text-[var(--cor-acento-dourado)] mt-2">R$ 12.450,75</p>
                 </div>
-                <div class="bg-[var(--fundo-card)] p-6 rounded-xl col-span-2">
+                <div class="bg-[var(--fundo-card)] p-6 rounded-xl lg:col-span-2">
                      <h3 class="text-lg font-semibold text-[var(--cor-texto-principal)] mb-4">Últimos Lançamentos</h3>
                      <div class="space-y-4">
                          <div class="flex items-center justify-between"><div class="flex items-center space-x-3"><i data-lucide="arrow-up-circle" class="w-6 h-6 text-[var(--cor-receita)]"></i><p class="text-[var(--cor-texto-principal)]">Salário</p></div><p class="font-medium text-[var(--cor-receita)]">+ R$ 5.000,00</p></div>
@@ -281,24 +294,24 @@
                        <button class="px-4 py-1 rounded-full text-sm bg-[var(--cor-acento-dourado)] text-black font-semibold">Escuro</button>
                        <button class="px-4 py-1 rounded-full text-sm text-[var(--cor-texto-secundario)]">Claro</button>
                    </div>
-               </div>
+                </div>
             </div>
             <!-- Seção de Perfil -->
             <div>
                 <h3 class="text-sm font-semibold text-[var(--cor-texto-secundario)] mb-2 px-2">PERFIL</h3>
                 <div class="bg-[var(--fundo-card)] p-6 rounded-lg">
                     <form class="space-y-4">
-                         <div>
-                             <label for="profile-name" class="text-sm font-medium text-[var(--cor-texto-secundario)]">Nome</label>
-                             <input type="text" id="profile-name" value="Usuário" class="mt-1 block w-full px-3 py-3 bg-[var(--fundo-elemento)] border border-[var(--cor-borda)] rounded-md focus:outline-none focus:ring-[var(--cor-acento-dourado)] focus:border-[var(--cor-acento-dourado)]">
-                         </div>
-                         <div>
-                             <label for="profile-email" class="text-sm font-medium text-[var(--cor-texto-secundario)]">Email</label>
-                             <input type="email" id="profile-email" value="usuario@email.com" class="mt-1 block w-full px-3 py-3 bg-[var(--fundo-elemento)] border border-[var(--cor-borda)] rounded-md focus:outline-none focus:ring-[var(--cor-acento-dourado)] focus:border-[var(--cor-acento-dourado)]">
-                         </div>
-                         <div class="text-right pt-2">
-                            <button type="button" class="py-2 px-5 text-sm font-bold rounded-md text-black bg-[var(--cor-acento-dourado)] hover:bg-[var(--cor-acento-dourado-hover)]">Salvar Alterações</button>
-                         </div>
+                        <div>
+                            <label for="profile-name" class="text-sm font-medium text-[var(--cor-texto-secundario)]">Nome</label>
+                            <input type="text" id="profile-name" value="Usuário" class="mt-1 block w-full px-3 py-3 bg-[var(--fundo-elemento)] border border-[var(--cor-borda)] rounded-md focus:outline-none focus:ring-[var(--cor-acento-dourado)] focus:border-[var(--cor-acento-dourado)]">
+                        </div>
+                        <div>
+                            <label for="profile-email" class="text-sm font-medium text-[var(--cor-texto-secundario)]">Email</label>
+                            <input type="email" id="profile-email" value="usuario@email.com" class="mt-1 block w-full px-3 py-3 bg-[var(--fundo-elemento)] border border-[var(--cor-borda)] rounded-md focus:outline-none focus:ring-[var(--cor-acento-dourado)] focus:border-[var(--cor-acento-dourado)]">
+                        </div>
+                        <div class="text-right pt-2">
+                           <button type="button" class="py-2 px-5 text-sm font-bold rounded-md text-black bg-[var(--cor-acento-dourado)] hover:bg-[var(--cor-acento-dourado-hover)]">Salvar Alterações</button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -512,7 +525,7 @@
                     <button class="w-full mt-auto py-3 text-sm font-bold rounded-md bg-[var(--fundo-elemento)] hover:bg-opacity-80 border-2 border-[var(--cor-acento-dourado)] text-[var(--cor-acento-dourado)]">Selecionar</button>
                 </div>
                 <!-- Plano 2 -->
-                <div class="bg-[var(--fundo-card)] p-6 rounded-lg border-2 border-[var(--cor-acento-dourado)] relative flex flex-col transform scale-105">
+                <div class="bg-[var(--fundo-card)] p-6 rounded-lg border-2 border-[var(--cor-acento-dourado)] relative flex flex-col md:scale-105">
                     <span class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[var(--cor-acento-dourado)] text-black text-xs font-bold px-3 py-1 rounded-full">MAIS POPULAR</span>
                     <h4 class="font-bold text-xl">Plano Premium</h4>
                     <p class="text-4xl font-bold my-4">R$ 39,90<span class="text-lg font-normal text-[var(--cor-texto-secundario)]">/mês</span></p>
@@ -535,6 +548,10 @@
                     <button class="w-full mt-auto py-3 text-sm font-bold rounded-md bg-[var(--fundo-elemento)] hover:bg-opacity-80 border-2 border-[var(--cor-acento-dourado)] text-[var(--cor-acento-dourado)]">Selecionar</button>
                 </div>
             </div>
+            <!-- Botão Voltar Adicionado -->
+            <div class="mt-12 w-full max-w-md mx-auto">
+                 <button id="plans-btn-dashboard" class="w-full mt-4 py-3 text-md font-bold rounded-md text-[var(--cor-texto-secundario)] hover:text-white">Voltar ao Dashboard</button>
+            </div>
         </div>
     </template>
 
@@ -550,6 +567,10 @@
                     mainContentContainer: document.getElementById('main-content-container'),
                     mainTitle: document.getElementById('main-title'),
                     rightPanel: document.getElementById('right-panel'),
+                    sidebar: document.getElementById('sidebar'),
+                    hamburgerBtn: document.getElementById('hamburger-btn'),
+                    closeMenuBtn: document.getElementById('close-menu-btn'),
+                    menuOverlay: document.getElementById('menu-overlay'),
                 },
 
                 // --- ESTADO DA APLICAÇÃO ---
@@ -574,7 +595,7 @@
                     },
                     goals: {
                         "1": { name: "Viagem de Férias", current: 3750, total: 5000, color: 'var(--cor-viagem)', icon: 'plane' },
-                        "2": { name: "Bares e Restaurantes", current: 9, total: 100, color: 'var(--cor-alimentacao)', icon: 'utensils' },
+                        "2": { name: "Fundo de Emergência", current: 9500, total: 10000, color: 'var(--cor-alimentacao)', icon: 'shield' },
                     },
                     contributions: {
                         "1": [
@@ -638,10 +659,10 @@
                     lancamentos: () => {
                         App.pages.renderTransactionList();
                         App.els.mainContentContainer.querySelector('#filter-buttons').addEventListener('click', (e) => {
-                            if (e.target.classList.contains('filter-btn')) {
+                            if (e.target.closest('.filter-btn')) {
                                 App.els.mainContentContainer.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                                e.target.classList.add('active');
-                                App.state.activeFilter = e.target.dataset.filter;
+                                e.target.closest('.filter-btn').classList.add('active');
+                                App.state.activeFilter = e.target.closest('.filter-btn').dataset.filter;
                                 App.pages.renderTransactionList();
                             }
                         });
@@ -726,7 +747,12 @@
                     },
 
                     relatorios: () => { App.ui.createOrUpdateCharts(); },
-                    plans: () => {},
+                    plans: () => {
+                        const backBtn = document.getElementById('plans-btn-dashboard');
+                        if (backBtn) {
+                            backBtn.addEventListener('click', () => App.pages.render('dashboard'));
+                        }
+                    },
                     configuracoes: () => {},
                     questionnaire: () => { App.ui.loadQuestion(0); },
                     'questionnaire-result': () => {
@@ -737,8 +763,23 @@
 
                 // --- LÓGICA DE UI (PAINÉIS, MODAIS, ETC.) ---
                 ui: {
-                    openRightPanel: () => App.els.rightPanel.classList.remove('hidden'),
-                    closeRightPanel: () => App.els.rightPanel.classList.add('hidden'),
+                    openMobileMenu: () => {
+                        App.els.sidebar.classList.remove('-translate-x-full');
+                        App.els.menuOverlay.classList.remove('hidden');
+                    },
+                    closeMobileMenu: () => {
+                        App.els.sidebar.classList.add('-translate-x-full');
+                        App.els.menuOverlay.classList.add('hidden');
+                    },
+
+                    openRightPanel: () => {
+                        App.els.rightPanel.classList.remove('hidden');
+                        App.els.rightPanel.classList.add('flex');
+                    },
+                    closeRightPanel: () => {
+                        App.els.rightPanel.classList.add('hidden');
+                        App.els.rightPanel.classList.remove('flex');
+                    },
 
                     showGoalDetails: (id) => {
                         const data = App.data.goals[id];
@@ -768,7 +809,7 @@
                                 contributionsList.appendChild(div);
                             });
                         } else {
-                            contributionsList.innerHTML = `<p class="text-center text-sm text-[var(--cor-texto-secundario)] py-4">Nenhuma contribuição este mês.</p>`;
+                            contributionsList.innerHTML = `<p class="text-center text-sm text-[var(--cor-texto-secundario)] py-4">Nenhuma contribuição para esta meta.</p>`;
                         }
                         
                         App.els.rightPanel.querySelector('.close-panel-btn').addEventListener('click', App.ui.closeRightPanel);
@@ -866,8 +907,10 @@
                         }
 
                         App.els.rightPanel.querySelector('#btn-save-transaction').addEventListener('click', () => {
-                            alert('Lançamento salvo! (simulação)');
                             App.ui.closeRightPanel();
+                            if(App.state.currentPage === 'lancamentos') {
+                                App.pages.renderTransactionList();
+                            }
                         });
                         
                         App.els.rightPanel.querySelector('.close-panel-btn').addEventListener('click', App.ui.closeRightPanel);
@@ -893,8 +936,8 @@
                             button.textContent = answer;
                             button.className = 'w-full py-3 text-lg font-medium rounded-md border-2 border-[var(--cor-borda)] hover:bg-[var(--fundo-card)]';
                             button.onclick = () => {
-                                answerOptions.querySelectorAll('button').forEach(btn => btn.classList.remove('bg-[var(--cor-acento-dourado)]', 'text-black'));
-                                button.classList.add('bg-[var(--cor-acento-dourado)]', 'text-black');
+                                answerOptions.querySelectorAll('button').forEach(btn => btn.classList.remove('bg-[var(--cor-acento-dourado)]', 'text-black', 'border-[var(--cor-acento-dourado)]'));
+                                button.classList.add('bg-[var(--cor-acento-dourado)]', 'text-black', 'border-[var(--cor-acento-dourado)]');
                                 questionArea.querySelector('#next-question-btn').disabled = false;
                             };
                             answerOptions.appendChild(button);
@@ -916,7 +959,7 @@
                             onConfirm();
                             hideModal();
                         };
-                        const cancelHandler = hideModal;
+                        const cancelHandler = () => hideModal();
 
                         const hideModal = () => {
                             modal.classList.add('hidden');
@@ -970,20 +1013,28 @@
                 // --- INICIALIZAÇÃO ---
                 init: () => {
                     document.getElementById('btn-login').addEventListener('click', () => {
-                        App.els.loginScreen.classList.add('hidden');
-                        App.els.appWrapper.classList.remove('hidden');
-                        App.els.appWrapper.classList.add('flex');
+                        App.els.loginScreen.style.display = 'none';
+                        App.els.appWrapper.style.display = 'flex';
                         
                         document.querySelectorAll('.sidebar-link').forEach(link => {
                             link.addEventListener('click', (e) => {
                                 e.preventDefault();
                                 App.pages.render(link.dataset.target);
+                                if (window.innerWidth < 1024) {
+                                    App.ui.closeMobileMenu();
+                                }
                             });
                         });
+                        
+                        App.els.hamburgerBtn.addEventListener('click', App.ui.openMobileMenu);
+                        App.els.closeMenuBtn.addEventListener('click', App.ui.closeMobileMenu);
+                        App.els.menuOverlay.addEventListener('click', App.ui.closeMobileMenu);
         
                         document.getElementById('btn-new-transaction').addEventListener('click', () => App.ui.showTransactionForm());
                         document.getElementById('btn-notifications').addEventListener('click', () => {
-                            App.els.rightPanel.innerHTML = document.getElementById('template-notifications').innerHTML;
+                            const template = document.getElementById('template-notifications');
+                            App.els.rightPanel.innerHTML = '';
+                            App.els.rightPanel.appendChild(template.content.cloneNode(true));
                             App.els.rightPanel.querySelector('.close-panel-btn').addEventListener('click', App.ui.closeRightPanel);
                             lucide.createIcons();
                             App.ui.openRightPanel();
@@ -991,10 +1042,8 @@
                         document.getElementById('btn-plans').addEventListener('click', () => App.pages.render('plans'));
                         document.getElementById('btn-logout').addEventListener('click', (e) => {
                             e.preventDefault();
-                            App.els.appWrapper.classList.add('hidden');
-                            App.els.appWrapper.classList.remove('flex');
-                            App.els.loginScreen.classList.remove('hidden');
-                            App.els.loginScreen.classList.add('flex');
+                            App.els.appWrapper.style.display = 'none';
+                            App.els.loginScreen.style.display = 'flex';
                         });
         
                         App.pages.render('dashboard');
